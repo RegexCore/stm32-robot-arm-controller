@@ -1,5 +1,5 @@
 <!DOCTYPE CrossStudio_Project_File>
-<solution Name="Roboterarm" target="8" version="2">
+<solution Name="Robotarm" target="8" version="2">
   <configuration
     Name="Debug"
     c_preprocessor_definitions="DEBUG"
@@ -12,7 +12,7 @@
     gcc_debugging_level="Level 2"
     gcc_omit_frame_pointer="Yes"
     gcc_optimization_level="Level 2 balanced" />
-  <project Name="Roboterarm">
+  <project Name="Robotarm">
     <configuration
       LIBRARY_IO_TYPE="RTT"
       Name="Common"
