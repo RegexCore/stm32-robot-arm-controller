@@ -139,12 +139,12 @@ The software was designed with the following objectives in mind:
 
 The firmware is designed for the following hardware components:
 
-- **Microcontroller:** STM32F446RET6
-- **PWM Servo Driver:** PCA9685 (connected via I²C bus)
-- **Communication Interface:** USART2
-- **Wireless Debug Output:** HC-05 Bluetooth module
-- **User Input:** Dual analog joystick panel
-- **Digital Inputs:** Emergency stop button, mode switch, joystick push buttons
+- **Microcontroller:** STM32F446RET6 (ARM Cortex-M4)
+- **PWM Servo Driver:** Adafruit 16-Channel 12-bit PWM / Servo Shield (PCA9685, I²C interface)
+- **Communication Interface:** USART2 (TX debug output)
+- **Wireless Debug Output:** HC-05 Bluetooth serial module
+- **User Input:** Custom dual-analog joystick control panel
+- **Digital Inputs:** Emergency stop button, automatic mode switch, joystick push buttons
 
 ### Analog Input Channels
 
