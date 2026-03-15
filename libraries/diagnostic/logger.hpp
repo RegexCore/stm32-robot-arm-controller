@@ -5,7 +5,7 @@
 * Created     : 24.02.2026
 *
 * Description :
-*   Logger für Diagnose- und Debugausgaben über USART.
+*   Logger for diagnostic and debug output via USART.
 *
 * Copyright (c) 2026 Manuel Wiesinger
 * All rights reserved.
@@ -16,21 +16,21 @@
 #include "logger.h"
 
 /**
- * C++-Wrapper für das C-basierte Logger-Modul.
- * Stellt einfache statische Funktionen für Diagnose- und Log-Ausgaben bereit.
+ * C++ wrapper for the C-based logger module.
+ * Provides simple static functions for diagnostic and log output.
  */
 namespace diagnostic
 {
     class Logger
     {
     public:
-        /// Initialisiert das Logger-System (muss einmal vor der Nutzung aufgerufen werden).
+        /// Initializes the logger system (must be called once before use).
         static void init()
         {
             logger_init();
         }
 
-        /// Gibt eine formatierte Diagnose-/Log-Nachricht aus.
+        /// Outputs a formatted diagnostic / log message.
         template<typename... Args>
         static void printf(const char *fmt, Args... args)
         {

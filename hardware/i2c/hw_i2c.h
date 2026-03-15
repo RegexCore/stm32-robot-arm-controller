@@ -5,8 +5,8 @@
 * Created     : 24.02.2026
 *
 * Description :
-*   Hardwaretreiber für die I2C1-Kommunikation.
-*   Low-Level I2C1 Treiber (PB8 = SCL, PB9 = SDA, 100kHz, AF4)
+*   Hardware driver for I2C1 communication.
+*   Low-level I2C1 driver (PB8 = SCL, PB9 = SDA, 100 kHz, AF4)
 *
 * Copyright (c) 2026 Manuel Wiesinger
 * All rights reserved.

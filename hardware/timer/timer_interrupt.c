@@ -5,7 +5,7 @@
 * Created     : 24.02.2026
 *
 * Description :
-*   Initialisierung des TIM7-Interrupttimers (10 ms).
+*   Initialization of the TIM7 interrupt timer (10 ms).
 *
 * Copyright (c) 2026 Manuel Wiesinger
 * All rights reserved.
@@ -16,26 +16,26 @@
 
 void TIM7_Init_10ms(void)
 {
-    // Takt für TIM7 einschalten (APB1)
+    // Enable clock for TIM7 (APB1)
     RCC->APB1ENR |= RCC_APB1ENR_TIM7EN;
 
-    // Timer stoppen, falls er läuft
+    // Stop timer if it is running
     TIM7->CR1 &= ~TIM_CR1_CEN;
 
-    // Prescaler und Auto-Reload setzen
+    // Set prescaler and auto-reload value
     TIM7->PSC = 31;      // -> 500 kHz
     TIM7->ARR = 4999;    // -> 10 ms
 
-    // Update-Interrupt erlauben
+    // Enable update interrupt
     TIM7->DIER |= TIM_DIER_UIE;
 
-    // Update-Flag löschen (falls gesetzt)
+    // Clear update flag (if set)
     TIM7->SR &= ~TIM_SR_UIF;
 
-    // NVIC-Interrupt für TIM7 einschalten
-    NVIC_SetPriority(TIM7_IRQn, 5);   // Priorität setzen
+    // Enable NVIC interrupt for TIM7
+    NVIC_SetPriority(TIM7_IRQn, 5);   // Set priority
     NVIC_EnableIRQ(TIM7_IRQn);
 
-    // Timer starten
+    // Start timer
     TIM7->CR1 |= TIM_CR1_CEN;
 }

@@ -5,7 +5,7 @@
 * Created     : 24.02.2026
 *
 * Description :
-*   Ansteuerung des PCA9685 PWM-Controllers.
+*   Control of the PCA9685 PWM controller.
 *
 * Copyright (c) 2026 Manuel Wiesinger
 * All rights reserved.
@@ -45,20 +45,20 @@ static void tiny_delay(void)
 
 static uint8_t calculate_prescale(uint32_t osc_hz, uint16_t freq_hz)
 {
-    if (freq_hz < 40)   
+    if (freq_hz < 40)
         freq_hz = 40;
 
-    if (freq_hz > 1000) 
+    if (freq_hz > 1000)
         freq_hz = 1000;
 
     uint64_t denom = (uint64_t)4096u * (uint64_t)freq_hz;
     uint64_t prescale_times256 = ((uint64_t)osc_hz << 8) / denom;
     uint64_t prescale = (prescale_times256 + 128) >> 8;
 
-    if (prescale < 1)   
+    if (prescale < 1)
         prescale = 1;
     
-    if (prescale > 256) 
+    if (prescale > 256)
         prescale = 256;
 
     return (uint8_t)(prescale - 1);
@@ -103,7 +103,7 @@ void PCA9685_SetPWM(uint8_t addr, uint8_t channel, uint16_t on, uint16_t off)
 
 void PCA9685_SetServoUS(uint8_t addr, uint8_t channel, uint16_t pulse_us)
 {
-    const uint32_t period_us = 20000UL;   // bei 50 Hz
+    const uint32_t period_us = 20000UL;   // at 50 Hz
 
     uint16_t ticks = (uint16_t)(((uint64_t)pulse_us * 4096ULL + (period_us / 2)) / period_us);
 

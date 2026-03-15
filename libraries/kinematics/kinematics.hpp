@@ -5,7 +5,7 @@
 * Created     : 24.02.2026
 *
 * Description :
-*   Vorwärts- und Inverskinematik des Roboterarms.
+*   Forward and inverse kinematics of the robotic arm.
 *
 * Copyright (c) 2026 Manuel Wiesinger
 * All rights reserved.
@@ -13,7 +13,7 @@
 
 #pragma once
 
-namespace robotarm 
+namespace robotarm
 {
     struct Vec3
     {
@@ -25,7 +25,7 @@ namespace robotarm
     struct IKResult
     {
         bool valid;
-        // Gelenkwinkel in GRAD inklusive Offset und Invertierung
+        // Joint angles in DEGREES including offset and inversion
         float q0;  // M0
         float q1;  // M1
         float q2;  // M2
@@ -34,38 +34,38 @@ namespace robotarm
     class Kinematics
     {
     public:
-        // Längen des Oberarms (L1) und Unterarms (L2) in mm
+        // Lengths of the upper arm (L1) and forearm (L2) in mm
         Kinematics(float link1, float link2);
 
         void init();
 
-        // Forward Kinematics Motor-Gelenkwinkeln (q0, q1, q2) in GRAD umrechnung in Position (x, y, z)
+        // Forward kinematics: convert motor joint angles (q0, q1, q2) in DEGREES into position (x, y, z)
         Vec3 forward(float q0_motor_deg, float q1_motor_deg, float q2_motor_deg) const;
 
-        // Inverse Kinematics von (x, y, z) umrechnung in Motor-Gelenkwinkel (q0, q1, q2) in GRAD 
+        // Inverse kinematics: convert (x, y, z) into motor joint angles (q0, q1, q2) in DEGREES
         IKResult inverse(float x, float y, float z, bool elbow_up = false) const;
 
-        // Motor Offsets für Berechnugen
+        // Motor offsets for calculations
         void setOffsets(float off0_deg, float off1_deg, float off2_deg);
 
-        // Invertierung wegen Motoreinbaurichtung berücksichtigen
+        // Take motor inversion due to mounting direction into account
         void setInverted(bool inv0, bool inv1, bool inv2);
 
     private:
-        float m_L1; // Oberarm-Länge
-        float m_L2; // Unterarm-Länge 
+        float m_L1; // Upper arm length
+        float m_L2; // Forearm length
 
-        // Motor Offsets in GRAD
-        float m_offset0_deg; // für M0
-        float m_offset1_deg; // für M1
-        float m_offset2_deg; // für M2
+        // Motor offsets in DEGREES
+        float m_offset0_deg; // for M0
+        float m_offset1_deg; // for M1
+        float m_offset2_deg; // for M2
 
-        // Motor Invertierung wegen Einbaurichtung
+        // Motor inversion due to mounting direction
         bool  m_inv0;
         bool  m_inv1;
         bool  m_inv2;
 
-        // Hilfsfunktionen: Motorwinkel/Kinematik-Winkel in Grad
+        // Helper functions: motor angle / kinematic angle in degrees
         float motorToKinDeg(int idx, float q_motor_deg) const;
         float kinToMotorDeg(int idx, float q_kin_deg) const;
     };

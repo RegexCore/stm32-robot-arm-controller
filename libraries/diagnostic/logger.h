@@ -5,7 +5,7 @@
 * Created     : 24.02.2026
 *
 * Description :
-*   Logger für Diagnose- und Debugausgaben über USART.
+*   Logger for diagnostic and debug output via USART.
 *
 * Copyright (c) 2026 Manuel Wiesinger
 * All rights reserved.
@@ -19,14 +19,14 @@ extern "C" {
 #endif
 
 /**
- * Initialisiert den Logger
- * Diese Funktion MUSS vor allen anderen Logger-Funktionen aufgerufen werden.
+ * Initializes the logger.
+ * This function MUST be called before any other logger functions.
  */
 void logger_init(void);
 
 /**
- * printf-ähnliche Log-Ausgabe.
- * Formatiert in einen internen Buffer und sendet ihn über UART und printf als Log
+ * printf-like log output.
+ * Formats the message into an internal buffer and sends it via UART and printf.
  */
 void logger_printf(const char *fmt, ...);
          

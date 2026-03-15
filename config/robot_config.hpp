@@ -5,7 +5,7 @@
 * Created     : 24.02.2026
 *
 * Description :
-*   Konfigurationsdaten für die Robotervarianten.
+*   Configuration data for the robot variants.
 *
 * Copyright (c) 2026 Manuel Wiesinger
 * All rights reserved.
@@ -19,27 +19,27 @@
 #define ROBOT_VARIANT_A
 //#define ROBOT_VARIANT_B
 
-namespace robotarm::config 
+namespace robotarm::config
 {
-    // RobotConfig: Settings der jeweiligen Roboter
-    struct RobotConfig 
+    // RobotConfig: configuration settings for the supported robot variants
+    struct RobotConfig
     {
         float offsets[3];             // M0, M1, M2
         bool inverted[3];             // M0, M1, M2
         const robotarm::model::ServoLimits servoLimits[model::ServoID::Count]; // Limits
-        std::array<int, model::ServoID::Count> initialAngles;       // Initial-Positionen
-        float upperArmLength;                   // Oberarm (mm)
-        float lowerArmLength;                   // Unterarm (mm)
+        std::array<int, model::ServoID::Count> initialAngles;                  // Initial positions
+        float upperArmLength;                                               // Upper arm length (mm)
+        float lowerArmLength;                                               // Forearm length (mm)
     };
 
-    // Roboter A Konfiguration
-    // constexpr: Der Wert ist zur Compile-Zeit bekannt und kann für Arrays,
-    // Templates und andere Compile-Time-Konstrukte verwendet werden.
-    // inline: Erlaubt die Definition im Header, ohne Mehrfachdefinitionen
-    // beim Linken zu verursachen (keine Text-Einfügung, sondern ODR-Regel)
-    // ODR (One Definition Rule): Jede Variable/Funktion darf im gesamten Programm
-    // nur einmal definiert sein; `inline` erlaubt mehrere *identische* Definitionen
-    // über mehrere Übersetzungseinheiten hinweg.
+    // Robot A configuration
+    // constexpr: the value is known at compile time and can be used for arrays,
+    // templates, and other compile-time constructs.
+    // inline: allows the definition in a header without causing multiple
+    // definition linker errors (this is not textual inlining, but an ODR rule).
+    // ODR (One Definition Rule): each variable/function may only be defined once
+    // across the entire program; `inline` allows multiple *identical* definitions
+    // across translation units.
     inline constexpr RobotConfig robotAConfig
     {
         // Offsets
@@ -48,7 +48,7 @@ namespace robotarm::config
         // Inverted
         {false, true, true},
 
-        // Servo Limits
+        // Servo limits
         {
             {20, 160, 0, 180, 500, 2500},       // Motor0
             {20, 170, 0, 180, 500, 2500},       // Motor1
@@ -58,15 +58,15 @@ namespace robotarm::config
             {40, 120, 0, 180, 500, 2500}        // Motor5
         },
 
-        // Startpositionen
+        // Initial positions
         {90, 40, 140, 90, 80, 60},
 
-        // Arm-Längen
-        100.0f,   // Oberarm in mm
-        100.0f    // Unterarm in mm
+        // Arm lengths
+        100.0f,   // Upper arm in mm
+        100.0f    // Forearm in mm
     };
 
-    // Roboter B Konfiguration
+    // Robot B configuration
     inline constexpr RobotConfig robotBConfig
     {
         {85.0f, 21.0f, 24.0f},
@@ -88,10 +88,10 @@ namespace robotarm::config
         100.0f
     };
 
-    // Auswahl über Build-Flags
-    // Das const beschreibt den Typ der Referenz, nicht die Referenzvariable. 
-    // constexpr bezieht sich auf Referenzvariable nicht auf das Objekt dahinter
-    // Eine constexpr-Referenz darf nur auf ein const Objekt zeigen.
+    // Selection via build flags
+    // const describes the referenced type, not the reference variable itself.
+    // constexpr applies to the reference variable, not the referenced object.
+    // A constexpr reference may only refer to a const object.
     #if defined(ROBOT_VARIANT_A)
     inline constexpr const RobotConfig& activeConfig = robotAConfig;
     #elif defined(ROBOT_VARIANT_B)
@@ -99,4 +99,4 @@ namespace robotarm::config
     #else
     inline constexpr const RobotConfig& activeConfig = robotAConfig; // Default
     #endif
-} 
+}

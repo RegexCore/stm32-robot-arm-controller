@@ -5,7 +5,7 @@
 * Created     : 24.02.2026
 *
 * Description :
-*   Einlesen und Bereitstellen der Joystick-Zustände.
+*   Reading and providing the joystick states.
 *
 * Copyright (c) 2026 Manuel Wiesinger
 * All rights reserved.
@@ -15,7 +15,7 @@
 
 #include "../../model/types.hpp"
 
-namespace robotarm 
+namespace robotarm
 {
     class Joystick
     {
@@ -24,7 +24,7 @@ namespace robotarm
         model::JoystickState joysticks[2];
         void init();
         void update();
-        bool isEmergencyStop() const; 
+        bool isEmergencyStop() const;
         bool isAutoModeOn() const;
     private:
 

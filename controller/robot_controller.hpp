@@ -5,7 +5,7 @@
 * Created     : 24.02.2026
 *
 * Description :
-*   Zentrale Steuerlogik des Roboterarms.
+*   Central control logic of the robotic arm.
 *
 * Copyright (c) 2026 Manuel Wiesinger
 * All rights reserved.

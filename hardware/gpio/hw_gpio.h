@@ -5,7 +5,7 @@
 * Created     : 24.02.2026
 *
 * Description :
-*   GPIO-Treiber für Taster- und Schalteingänge.
+*   GPIO driver for push-button and switch inputs.
 *
 * Copyright (c) 2026 Manuel Wiesinger
 * All rights reserved.
@@ -20,23 +20,24 @@
 extern "C" {
 #endif
 
-// Pull-Konfiguration für die GPIO-Eingänge
+/* Pull configuration for GPIO inputs */
 typedef enum
 {
-    PC_NO_PULL   = 0U,   // kein interner Pull-Widerstand
-    PC_PULL_UP   = 1U,   // interner Pull-Up
-    PC_PULL_DOWN = 2U    // interner Pull-Down
+    PC_NO_PULL   = 0U,   /* No internal pull resistor */
+    PC_PULL_UP   = 1U,   /* Internal pull-up */
+    PC_PULL_DOWN = 2U    /* Internal pull-down */
 } PC_Pull_t;
 
-// Initialisiert PC10 und PC11 als Eingänge mit optionalem Pull-Widerstand
+/* Initializes PC10 and PC11 as inputs with optional pull resistor */
 void HW_PC10_PC11_Init(PC_Pull_t pull);
 
-// Initialisiert PC12 als Eingang mit optionalem Pull-Widerstand
+/* Initializes PC12 as input with optional pull resistor */
 void HW_PC12_Init(PC_Pull_t pull);
 
-// Initialisiert PA15 als Eingang mit optionalem Pull-Widerstand
+/* Initializes PA15 as input with optional pull resistor */
 void HW_PA15_Init(PC_Pull_t pull);
 
+/* Reads current logic level of the inputs (inverted button logic) */
 uint8_t HW_PC10_Read(void);
 uint8_t HW_PC11_Read(void);
 uint8_t HW_PC12_Read(void);

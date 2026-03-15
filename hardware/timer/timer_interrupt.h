@@ -5,7 +5,7 @@
 * Created     : 24.02.2026
 *
 * Description :
-*   Initialisierung des 16 Bit TIM7-Interrupttimers (10 ms).
+*   Initialization of the 16-bit TIM7 interrupt timer (10 ms).
 *
 * Copyright (c) 2026 Manuel Wiesinger
 * All rights reserved.

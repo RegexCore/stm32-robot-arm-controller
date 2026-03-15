@@ -56,11 +56,11 @@ int main(void)
     Logger::printf("[Clock] System Core Clock: %d Hz (%d.%d MHz)\n",
          SystemCoreClock, mhz, centi);
     
-    Logger::printf("[Init] Periphery Setup Completed\n");
-    Logger::printf("[Main] Program Start\n");
+    Logger::printf("[Init] Peripheral setup completed\n");
+    Logger::printf("[Main] Program start\n");
 
     Joystick joystick;
-    Kinematics kinematics(config::activeConfig.upperArmLength, config::activeConfig.lowerArmLength);  // Oberarm = 100, Unterarm = 100 (Längen in mm)
+    Kinematics kinematics(config::activeConfig.upperArmLength, config::activeConfig.lowerArmLength);  // Upper arm = 100, forearm = 100 (lengths in mm)
     ServoController servocontroller(joystick);
     RobotController robotcontroller(joystick, kinematics, servocontroller);
     
@@ -78,9 +78,9 @@ int main(void)
 
 void TIM7_IRQHandler(void)
 {
-    if (TIM7->SR & TIM_SR_UIF)   // Update-Interrupt?
+    if (TIM7->SR & TIM_SR_UIF)   // Update interrupt?
     {
         control_tick = true;
-        TIM7->SR &= ~TIM_SR_UIF; // Flag löschen
+        TIM7->SR &= ~TIM_SR_UIF; // Clear flag
     }
 }

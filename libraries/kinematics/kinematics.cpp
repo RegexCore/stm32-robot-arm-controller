@@ -5,7 +5,7 @@
 * Created     : 24.02.2026
 *
 * Description :
-*   Vorwärts- und Inverskinematik des Roboterarms.
+*   Forward and inverse kinematics of the robotic arm.
 *
 * Copyright (c) 2026 Manuel Wiesinger
 * All rights reserved.
@@ -16,7 +16,7 @@
 
 namespace robotarm
 {
-    // nur in dieser Datei sichtbar (anonym namespace)
+    // visible only in this file (anonymous namespace)
     namespace
     {
         constexpr float PI      = 3.14159265358979323846f;
@@ -54,7 +54,7 @@ namespace robotarm
         m_inv2 = inv2;
     }
 
-    // Motor -> Kinematik (alles in GRAD)
+    // Motor -> kinematics (all values in DEGREES)
     float Kinematics::motorToKinDeg(int idx, float q_motor_deg) const
     {
         float offset = 0.0f;
@@ -78,15 +78,15 @@ namespace robotarm
                 break;
         }
 
-        float q_rel = q_motor_deg - offset;  // Offset wegnehmen
+        float q_rel = q_motor_deg - offset;  // remove offset
         
         if (inv)
-            q_rel = -q_rel;                  // Richtung invertieren
+            q_rel = -q_rel;                  // invert direction
 
-        return q_rel; // Kinematik-Winkel in GRAD
+        return q_rel; // kinematic angle in DEGREES
     }
 
-    // Kinematik -> Motor (alles in GRAD)
+    // Kinematics -> motor (all values in DEGREES)
     float Kinematics::kinToMotorDeg(int idx, float q_kin_deg) const
     {
         float offset = 0.0f;
@@ -111,41 +111,41 @@ namespace robotarm
         }
 
         if (inv)
-            q_kin_deg = -q_kin_deg;         // Richtung wieder umdrehen
+            q_kin_deg = -q_kin_deg;         // reverse direction again
 
-        float q_motor_deg = offset + q_kin_deg; // Offset addieren
+        float q_motor_deg = offset + q_kin_deg; // add offset
 
         return q_motor_deg;
     }
 
-    // Forward Kinematics anhand von Motor Winkel die Koordinaten x,y,z berechnen
+    // Calculate x, y, z coordinates from motor angles using forward kinematics
     Vec3 Kinematics::forward(float q0_motor_deg, float q1_motor_deg, float q2_motor_deg) const
     {
-        // Motorwinkel -> Kinematik-Winkel (GRAD)
+        // Motor angles -> kinematic angles (DEGREES)
         float q0_deg = motorToKinDeg(0, q0_motor_deg);
         float q1_deg = motorToKinDeg(1, q1_motor_deg);
         float q2_deg = motorToKinDeg(2, q2_motor_deg);
 
-        // in Radiant umrechnen für sin/cos
+        // Convert to radians for sin/cos
         float q0 = q0_deg * DEG2RAD;
         float q1 = q1_deg * DEG2RAD;
         float q2 = q2_deg * DEG2RAD;
 
-        // Projektion der beiden Segmente in die Arm-Ebene (r = Abstand von Basisachse)
+        // Projection of the two segments into the arm plane (r = distance from base axis)
         float r = m_L1 * std::cos(q1) + m_L2 * std::cos(q1 + q2);
 
         Vec3 p;
-        // Drehung um Z durch q0 (Basis)
+        // Rotation around Z by q0 (base)
         p.x = std::cos(q0) * r;
         p.y = std::sin(q0) * r;
 
-        // Höhe z
+        // Height z
         p.z = m_L1 * std::sin(q1) + m_L2 * std::sin(q1 + q2);
 
         return p;
     }
 
-    // Inverse Kinematics anhand von Koordinaten x,y,z die Motor Winkel berechnen
+    // Calculate motor angles from x, y, z coordinates using inverse kinematics
     IKResult Kinematics::inverse(float x, float y, float z, bool elbow_up) const
     {
         IKResult res;
@@ -155,24 +155,24 @@ namespace robotarm
         res.q1 = 0.0f;
         res.q2 = 0.0f;
 
-        // Basiswinkel q0
+        // Base angle q0
         float q0 = std::atan2(y, x);
 
-        // Abstand in der XY-Ebene
+        // Distance in the XY plane
         float r = std::sqrt(x * x + y * y);
 
-        // Cosinussatz für Ellbogenwinkel q2
+        // Law of cosines for elbow angle q2
         float num = r * r + z * z - m_L1 * m_L1 - m_L2 * m_L2;
         float den = 2.0f * m_L1 * m_L2;
         
         if (den == 0.0f)
         {
-            return res; // Sicherheitscheck
+            return res; // safety check
         }
 
         float D = num / den;
 
-        // Ziel außerhalb der Reichweite?
+        // Target outside reachable range?
         if (D < -1.0f || D > 1.0f)
         {
             return res;
@@ -187,17 +187,17 @@ namespace robotarm
 
         float q2 = std::atan2(s2, D);
 
-        // Schulterwinkel q1
+        // Shoulder angle q1
         float phi = std::atan2(z, r);
         float psi = std::atan2(m_L2 * s2, m_L1 + m_L2 * D);
         float q1 = phi - psi;
 
-        // Radiant zu Kinematik-Winkel in GRAD umrechnen
+        // Convert radians to kinematic angles in DEGREES
         float q0_deg_kin = q0 * RAD2DEG;
         float q1_deg_kin = q1 * RAD2DEG;
         float q2_deg_kin = q2 * RAD2DEG;
 
-        // Kinematik-Winkel (Grad) zu Motorwinkel (Grad) umrechnen
+        // Convert kinematic angles (degrees) to motor angles (degrees)
         float q0_motor_deg = kinToMotorDeg(0, q0_deg_kin);
         float q1_motor_deg = kinToMotorDeg(1, q1_deg_kin);
         float q2_motor_deg = kinToMotorDeg(2, q2_deg_kin);

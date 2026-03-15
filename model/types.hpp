@@ -5,7 +5,7 @@
 * Created     : 24.02.2026
 *
 * Description :
-*   Datentypen für Gelenke, Joystick und Servos.
+*   Data types for joints, joystick and servos.
 *
 * Copyright (c) 2026 Manuel Wiesinger
 * All rights reserved.
@@ -15,17 +15,17 @@
 
 #include <array>
 
-namespace robotarm::model 
+namespace robotarm::model
 {
-    // JointAngles: 6 Gelenkwinkel des Roboters
-    // (IK Ergebnis oder FK Eingang)
+    // JointAngles: 6 joint angles of the robot
+    // (IK result or FK input)
     struct JointAngles
     {
-        std::array<int, 6> targetAngles{};   // Soll-Winkel (was die Servos erreichen sollen)
-        std::array<int, 6> currentAngles{};  // Ist-Winkel (aktuelle Position)
+        std::array<int, 6> targetAngles{};   // Target angles (what the servos should reach)
+        std::array<int, 6> currentAngles{};  // Actual angles (current position)
     };
 
-    // JoystickState: Zustand des Steuer-Panels
+    // JoystickState: state of the control panel
     struct JoystickState
     {
         int x = 0;     // 0 … +4095
@@ -34,22 +34,22 @@ namespace robotarm::model
         bool button = false;
     };
 
-    // ServoLimits: Grenzen für jeden Servo-Motor
-    // Notwendig um IK-Ausgabe auf reale Servowerte abzubilden
+    // ServoLimits: limits for each servo motor
+    // Required to map IK output to real servo values
     struct ServoLimits
     {
-        int limitMinAngle = 0;      // Grad
-        int limitMaxAngle = 180;    // Grad
+        int limitMinAngle = 0;      // degrees
+        int limitMaxAngle = 180;    // degrees
 
-        int minAngle = 0;      // Grad
-        int maxAngle = 180;    // Grad
+        int minAngle = 0;           // degrees
+        int maxAngle = 180;         // degrees
 
-        int minPulse = 500;    // µs
-        int maxPulse = 2500;   // µs
+        int minPulse = 500;         // µs
+        int maxPulse = 2500;        // µs
     };
 
-    // Servo Motor Zuordnung (enum class ServoID wäre typsicher)
-    enum ServoID : uint8_t 
+    // Servo motor mapping (enum class ServoID would be type-safe)
+    enum ServoID : uint8_t
     {
         Motor0 = 0,
         Motor1 = 1,

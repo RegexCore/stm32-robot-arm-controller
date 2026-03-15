@@ -5,7 +5,7 @@
 * Created     : 24.02.2026
 *
 * Description :
-*   Logger für Diagnose- und Debugausgaben über USART.
+*   Logger for diagnostic and debug output via USART.
 *
 * Copyright (c) 2026 Manuel Wiesinger
 * All rights reserved.
@@ -17,7 +17,7 @@
 #include "../../hardware/usart/hw_usart.h"
 
 /**
- * Initialisiert das Logger-System bzw. die USART Schnittstelle
+ * Initializes the logger system and the USART interface
  */
 void logger_init(void)
 {
@@ -25,11 +25,11 @@ void logger_init(void)
 }
 
 /**
- * Gibt eine formatierte Log-/Diagnose-Nachricht aus.
- * Die Ausgabe erfolgt sowohl über printf als auch über die USART-Schnittstelle.
+ * Outputs a formatted log / diagnostic message.
+ * The message is printed via printf as well as via the USART interface.
  *
- * @param fmt Format-String (printf-Stil)
- * @param ... Variadische Argumente passend zum Format-String
+ * @param fmt Format string (printf style)
+ * @param ... Variadic arguments matching the format string
  */
 void logger_printf(const char *fmt, ...)
 {
@@ -43,7 +43,7 @@ void logger_printf(const char *fmt, ...)
     vsnprintf(buffer, sizeof(buffer), fmt, args);
     va_end(args);
 
-    buffer[sizeof(buffer) - 1] = '\0';  // Sicherheit: String terminieren
+    buffer[sizeof(buffer) - 1] = '\0';  // Safety: ensure string termination
 
     printf("%s", buffer);
     HW_USART2_SendMessage(buffer);

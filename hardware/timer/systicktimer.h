@@ -5,7 +5,7 @@
 * Created     : 24.02.2026
 *
 * Description :
-*   SysTick-basierte Zeitfunktionen und Millisekunden-Delay.
+*   SysTick-based time functions and millisecond delay.
 *
 * Copyright (c) 2026 Manuel Wiesinger
 * All rights reserved.

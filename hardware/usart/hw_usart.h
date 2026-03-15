@@ -5,7 +5,7 @@
 * Created     : 24.02.2026
 *
 * Description :
-*   Hardwaretreiber für die USART2-Schnittstelle.
+*   Hardware driver for the USART2 interface.
 *   PA2 = TX, PA3 = RX, AF7, USART2 TX only
 *
 * Copyright (c) 2026 Manuel Wiesinger
@@ -20,11 +20,11 @@ extern "C" {
 #endif
 
 #ifndef HW_USART2_PCLK_HZ
-#define HW_USART2_PCLK_HZ  16000000UL   //APB1-Takt
+#define HW_USART2_PCLK_HZ  16000000UL   // APB1 clock
 #endif
 
 #ifndef HW_USART2_BAUD
-#define HW_USART2_BAUD     9600UL   //Gewünschte Baudrate
+#define HW_USART2_BAUD     9600UL       // Desired baud rate
 #endif
 
 void HW_USART2_Init(void);

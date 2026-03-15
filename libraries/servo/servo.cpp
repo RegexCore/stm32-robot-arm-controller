@@ -5,7 +5,7 @@
 * Created     : 24.02.2026
 *
 * Description :
-*   Steuerung und Regelung der Servomotoren.
+*   Control and regulation of the servo motors.
 *
 * Copyright (c) 2026 Manuel Wiesinger
 * All rights reserved.
@@ -17,7 +17,7 @@
 #include "../../hardware/timer/systicktimer.h"
 #include "../../config/robot_config.hpp"
 
-namespace robotarm 
+namespace robotarm
 {
     using namespace robotarm::model;
 
@@ -37,7 +37,7 @@ namespace robotarm
     void ServoController::init(model::JointAngles& servoPosition)
     {
         servoPosition.targetAngles = robotarm::config::activeConfig.initialAngles;
-        servoPosition.currentAngles  = servoPosition.targetAngles;
+        servoPosition.currentAngles = servoPosition.targetAngles;
 
         moveToPosition(Motor2, servoPosition.targetAngles[Motor2]);
         moveToPosition(Motor1, servoPosition.targetAngles[Motor1]);
@@ -49,10 +49,10 @@ namespace robotarm
     }
 
     void ServoController::moveAllToTargets(model::JointAngles& servoPosition,
-                                       int stepDeg,
-                                       int stepDelayMs)
+                                           int stepDeg,
+                                           int stepDelayMs)
     {
-        // zur Sicherheit minimale Werte vorgeben
+        // Set minimum values for safety
         if (stepDeg < 1)      stepDeg = 1;
         if (stepDelayMs < 1)  stepDelayMs = 1;
 
@@ -65,16 +65,16 @@ namespace robotarm
                 int current = servoPosition.currentAngles[motor];
                 int target  = servoPosition.targetAngles[motor];
 
-                if (target < servoLimits[motor].limitMinAngle) 
+                if (target < servoLimits[motor].limitMinAngle)
                     target = servoLimits[motor].limitMinAngle;
 
-                if (target > servoLimits[motor].limitMaxAngle) 
+                if (target > servoLimits[motor].limitMaxAngle)
                     target = servoLimits[motor].limitMaxAngle;
 
                 int diff = target - current;
 
                 if (diff == 0)
-                    continue; // dieser Motor ist schon am Ziel
+                    continue; // This motor is already at its target position
 
                 anyMoving = true;
 
@@ -100,7 +100,7 @@ namespace robotarm
 
     void ServoController::moveToPosition(uint8_t motorNumber, int angle)
     {
-        if (m_joystick.isEmergencyStop()) 
+        if (m_joystick.isEmergencyStop())
         {
             return;
         }
@@ -111,20 +111,20 @@ namespace robotarm
 
     int ServoController::angleToPulse(float angleDeg, const model::ServoLimits& servoLimit)
     {
-        // Winkel auf erlaubten Bereich begrenzen
-        if (angleDeg < servoLimit.limitMinAngle) 
+        // Limit angle to the allowed range
+        if (angleDeg < servoLimit.limitMinAngle)
             angleDeg = servoLimit.limitMinAngle;
 
-        if (angleDeg > servoLimit.limitMaxAngle) 
+        if (angleDeg > servoLimit.limitMaxAngle)
             angleDeg = servoLimit.limitMaxAngle;
 
         float angleSpan = servoLimit.maxAngle - servoLimit.minAngle;
 
-        // 0 kein gültiger Bereich für Berechnung nachher
+        // 0 means no valid range for later calculation
         if (angleSpan == 0.0f)
             return static_cast<int>(servoLimit.minPulse);
 
-        // Lineare Gleichung kx + d
+        // Linear equation kx + d
         float k = (servoLimit.maxPulse - servoLimit.minPulse) / angleSpan;
         float d = servoLimit.minPulse - k * servoLimit.minAngle;
 

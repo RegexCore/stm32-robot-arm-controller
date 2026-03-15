@@ -5,7 +5,7 @@
 * Created     : 24.02.2026
 *
 * Description :
-*   Steuerung und Regelung der Servomotoren.
+*   Control and regulation of the servo motors.
 *
 * Copyright (c) 2026 Manuel Wiesinger
 * All rights reserved.
@@ -16,7 +16,7 @@
 #include "../../model/types.hpp"
 #include "../joystick/joystick.hpp"
 
-namespace robotarm 
+namespace robotarm
 {
     class ServoController
     {
@@ -25,8 +25,8 @@ namespace robotarm
   
         void init(model::JointAngles& servoPosition);
         void moveAllToTargets(model::JointAngles& servoPosition,
-                                       int stepDeg,
-                                       int stepDelayMs);
+                              int stepDeg,
+                              int stepDelayMs);
         const model::ServoLimits servoLimits[model::ServoID::Count];
     private:
         void moveToPosition(uint8_t motorNumber, int angle);

@@ -5,11 +5,11 @@
 * Created     : 24.02.2026
 *
 * Description :
-*   GPIO-Treiber für Taster- und Schalteingänge.
+*   GPIO driver for push-button and switch inputs.
 *   PC10 = Joystick Left
 *   PC11 = Joystick Right
-*   PC12 = Button 1 (Notaus)
-*   PA15 = Button 2 (Auto Mode on/off)
+*   PC12 = Button 1 (Emergency Stop)
+*   PA15 = Button 2 (Auto mode on/off)
 *
 * Copyright (c) 2026 Manuel Wiesinger
 * All rights reserved.
@@ -20,14 +20,14 @@
 
 void HW_PC10_PC11_Init(PC_Pull_t pull)
 {
-    /* Clock für GPIOC aktivieren */
+    /* Enable clock for GPIOC */
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
-    (void)RCC->AHB1ENR;     // sicherstellen, dass der GPIO-Takt aktiv ist
+    (void)RCC->AHB1ENR;     // Ensure GPIO clock is active
 
-    /* PC10 und PC11 als Eingang */
+    /* Configure PC10 and PC11 as input */
     GPIOC->MODER &= ~(GPIO_MODER_MODE10 | GPIO_MODER_MODE11);
 
-    /* Pull-Up / Pull-Down löschen */
+    /* Clear pull-up / pull-down configuration */
     GPIOC->PUPDR &= ~(GPIO_PUPDR_PUPD10 | GPIO_PUPDR_PUPD11);
 
     switch (pull)
@@ -41,7 +41,6 @@ void HW_PC10_PC11_Init(PC_Pull_t pull)
             break;
 
         case PC_NO_PULL:
-
         default:
             break;
     }
@@ -49,14 +48,14 @@ void HW_PC10_PC11_Init(PC_Pull_t pull)
 
 void HW_PC12_Init(PC_Pull_t pull)
 {
-    /* Clock aktivieren */
+    /* Enable clock for GPIOC */
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
     (void)RCC->AHB1ENR;
 
-    /* PC12 als Eingang */
+    /* Configure PC12 as input */
     GPIOC->MODER &= ~GPIO_MODER_MODE12;
 
-    /* Pull löschen */
+    /* Clear pull configuration */
     GPIOC->PUPDR &= ~GPIO_PUPDR_PUPD12;
 
     switch (pull)
@@ -77,14 +76,14 @@ void HW_PC12_Init(PC_Pull_t pull)
 
 void HW_PA15_Init(PC_Pull_t pull)
 {
-    /* Clock für GPIOA aktivieren */
+    /* Enable clock for GPIOA */
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
     (void)RCC->AHB1ENR;
 
-    /* PA15 als Eingang */
+    /* Configure PA15 as input */
     GPIOA->MODER &= ~GPIO_MODER_MODE15;
 
-    /* Pull löschen */
+    /* Clear pull configuration */
     GPIOA->PUPDR &= ~GPIO_PUPDR_PUPD15;
 
     switch (pull)
@@ -105,24 +104,24 @@ void HW_PA15_Init(PC_Pull_t pull)
 
 uint8_t HW_PC10_Read(void)
 {
-    // Taste zieht auf GND -> invertiert zurückgeben
+    // Button pulls the line to GND -> return inverted logic level
     return ((GPIOC->IDR & GPIO_IDR_ID10) ? 0U : 1U);
 }
 
 uint8_t HW_PC11_Read(void)
 {
-    // Taste zieht auf GND -> invertiert zurückgeben
+    // Button pulls the line to GND -> return inverted logic level
     return ((GPIOC->IDR & GPIO_IDR_ID11) ? 0U : 1U);
 }
 
 uint8_t HW_PC12_Read(void)
 {
-    // Taste zieht auf GND -> invertiert zurückgeben
+    // Button pulls the line to GND -> return inverted logic level
     return ((GPIOC->IDR & GPIO_IDR_ID12) ? 0U : 1U);
 }
 
 uint8_t HW_PA15_Read(void)
 {
-    // Taste zieht auf GND -> invertiert zurückgeben
+    // Button pulls the line to GND -> return inverted logic level
     return ((GPIOA->IDR & GPIO_IDR_ID15) ? 0U : 1U);
 }

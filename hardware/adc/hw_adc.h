@@ -5,8 +5,8 @@
 * Created     : 24.02.2026
 *
 * Description :
-*   ADC-Treiber zur Erfassung analoger Eingangswerte.
-*   ADC1 mit DMA (DMA2, Stream 0, Channel 0)
+*   ADC driver for acquisition of analog input values.
+*   ADC1 with DMA (DMA2, Stream 0, Channel 0)
 *
 * Copyright (c) 2026 Manuel Wiesinger
 * All rights reserved.
@@ -22,22 +22,23 @@ extern "C" {
 #endif
 
 /*
- Initialisiert ADC1 und DMA2 für die Kanäle
+ Initializes ADC1 and DMA2 for the following channels:
  PA0 = ADC1_IN0
  PA1 = ADC1_IN1
  PA4 = ADC1_IN4
  PB0 = ADC1_IN8
- Nach Aufruf werden die Messwerte kontinuierlich per DMA
- in das Array adc_values[4] geschrieben.
+
+ After initialization, the measured values are continuously written
+ to the adc_values[4] array via DMA.
  */
 void HW_ADC_Init(void);
 
 /*
- Array mit den aktuellen ADC-Messwerten
- Index 0: Kanal ADC1_IN0 (PA0)
- Index 1: Kanal ADC1_IN1 (PA1)
- Index 2: Kanal ADC1_IN4 (PA4)
- Index 3: Kanal ADC1_IN8 (PB0)
+ Array containing the current ADC measurement values.
+ Index 0: Channel ADC1_IN0 (PA0)
+ Index 1: Channel ADC1_IN1 (PA1)
+ Index 2: Channel ADC1_IN4 (PA4)
+ Index 3: Channel ADC1_IN8 (PB0)
  */
 extern volatile uint16_t adc_values[4];
 
