@@ -1,0 +1,132 @@
+<!DOCTYPE CrossStudio_Project_File>
+<solution Name="Roboterarm" target="8" version="2">
+  <configuration
+    Name="Debug"
+    c_preprocessor_definitions="DEBUG"
+    gcc_debugging_level="Level 3"
+    gcc_omit_frame_pointer="Yes"
+    gcc_optimization_level="None" />
+  <configuration
+    Name="Release"
+    c_preprocessor_definitions="NDEBUG"
+    gcc_debugging_level="Level 2"
+    gcc_omit_frame_pointer="Yes"
+    gcc_optimization_level="Level 2 balanced" />
+  <project Name="Roboterarm">
+    <configuration
+      LIBRARY_IO_TYPE="RTT"
+      Name="Common"
+      Target="STM32F446RETx"
+      arm_architecture="v7EM"
+      arm_compiler_variant="SEGGER"
+      arm_core_type="Cortex-M4"
+      arm_endian="Little"
+      arm_fp_abi="Hard"
+      arm_fpu_type="FPv4-SP-D16"
+      arm_linker_heap_size="1024"
+      arm_linker_process_stack_size="0"
+      arm_linker_stack_size="2048"
+      arm_linker_variant="SEGGER"
+      arm_simulator_memory_simulation_parameter="ROM;0x08000000;0x00080000;RAM;0x20000000;0x00020000"
+      arm_target_device_name="STM32F446RE"
+      arm_target_interface_type="SWD"
+      c_preprocessor_definitions="ARM_MATH_CM4;STM32F446xx;__STM32F446_SUBFAMILY;__STM32F4XX_FAMILY"
+      c_user_include_directories="$(ProjectDir)/CMSIS_5/CMSIS/Core/Include;$(ProjectDir)/STM32F4xx/Device/Include"
+      debug_register_definition_file="$(ProjectDir)/STM32F446_Registers.xml"
+      debug_stack_pointer_start="__stack_end__"
+      debug_start_from_entry_point_symbol="Yes"
+      debug_target_connection="J-Link"
+      gcc_c_language_standard="gnu17"
+      gcc_cplusplus_language_standard="gnu++20"
+      gcc_entry_point="Reset_Handler"
+      link_linker_script_file="$(ProjectDir)/STM32F4xx_Flash.icf"
+      linker_memory_map_file="$(ProjectDir)/STM32F446RETx_MemoryMap.xml"
+      macros="DeviceHeaderFile=$(PackagesDir)/STM32F4xx/Device/Include/stm32f4xx.h;DeviceSystemFile=$(PackagesDir)/STM32F4xx/Device/Source/system_stm32f4xx.c;DeviceVectorsFile=$(PackagesDir)/STM32F4xx/Source/stm32f446xx_Vectors.s;DeviceFamily=STM32F4xx;DeviceSubFamily=STM32F446;Target=STM32F446RETx"
+      project_directory=""
+      project_type="Executable"
+      target_reset_script="Reset();" />
+    <folder Name="CMSIS Files">
+      <file file_name="STM32F4xx/Device/Include/stm32f446xx.h" />
+      <file file_name="STM32F4xx/Device/Include/stm32f4xx.h" />
+      <file file_name="STM32F4xx/Device/Source/system_stm32f4xx.c">
+        <configuration
+          Name="Common"
+          default_code_section=".init"
+          default_const_section=".init_rodata" />
+      </file>
+    </folder>
+    <folder Name="Script Files">
+      <file file_name="STM32F4xx/Scripts/STM32F4xx_Target.js">
+        <configuration Name="Common" file_type="Reset Script" />
+      </file>
+    </folder>
+    <folder Name="Source Files">
+      <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc" />
+      <folder Name="config">
+        <file file_name="config/robot_config.hpp" />
+      </folder>
+      <folder Name="controller">
+        <file file_name="controller/robot_controller.cpp" />
+        <file file_name="controller/robot_controller.hpp" />
+      </folder>
+      <folder Name="hardware">
+        <folder Name="adc">
+          <file file_name="hardware/adc/hw_adc.c" />
+          <file file_name="hardware/adc/hw_adc.h" />
+        </folder>
+        <folder Name="gpio">
+          <file file_name="hardware/gpio/hw_gpio.c" />
+          <file file_name="hardware/gpio/hw_gpio.h" />
+        </folder>
+        <folder Name="i2c">
+          <file file_name="hardware/i2c/hw_i2c.c" />
+          <file file_name="hardware/i2c/hw_i2c.h" />
+        </folder>
+        <folder Name="timer">
+          <file file_name="hardware/timer/systicktimer.c" />
+          <file file_name="hardware/timer/systicktimer.h" />
+          <file file_name="hardware/timer/timer_interrupt.c" />
+          <file file_name="hardware/timer/timer_interrupt.h" />
+        </folder>
+        <folder Name="usart">
+          <file file_name="Hardware/Usart/hw_usart.c" />
+          <file file_name="Hardware/Usart/hw_usart.h" />
+        </folder>
+      </folder>
+      <folder Name="libraries">
+        <folder Name="diagnostic">
+          <file file_name="libraries/diagnostic/logger.c" />
+          <file file_name="libraries/diagnostic/logger.h" />
+          <file file_name="libraries/diagnostic/logger.hpp" />
+        </folder>
+        <folder Name="joystick">
+          <file file_name="libraries/joystick/joystick.cpp" />
+          <file file_name="libraries/joystick/joystick.hpp" />
+        </folder>
+        <folder Name="kinematics">
+          <file file_name="libraries/kinematics/kinematics.cpp" />
+          <file file_name="libraries/kinematics/kinematics.hpp" />
+        </folder>
+        <folder Name="pca9685">
+          <file file_name="Libraries/PCA9685/pca9685.c" />
+          <file file_name="Libraries/PCA9685/pca9685.h" />
+        </folder>
+        <folder Name="servo">
+          <file file_name="libraries/servo/servo.cpp" />
+          <file file_name="libraries/servo/servo.hpp" />
+        </folder>
+      </folder>
+      <folder Name="model">
+        <file file_name="model/types.hpp" />
+      </folder>
+      <file file_name="main.cpp" />
+    </folder>
+    <folder Name="System Files">
+      <file file_name="SEGGER_THUMB_Startup.s" />
+      <file file_name="STM32F4xx/Source/stm32f446xx_Vectors.s">
+        <configuration Name="Common" file_type="Assembly" />
+      </file>
+      <file file_name="STM32F4xx/Source/STM32F4xx_Startup.s" />
+    </folder>
+  </project>
+</solution>
