@@ -63,6 +63,7 @@ This project was developed as part of personal advanced training in embedded C++
 - [Development Environment](#development-environment)
 - [Build Notes](#build-notes)
 - [Possible Future Improvements](#possible-future-improvements)
+- [Disclaimer](#disclaimer)
 - [Author](#author)
 - [License](#license)
 - [Third-Party Components](#third-party-components)
@@ -882,6 +883,23 @@ Potential future extensions of the project include:
 * extended diagnostics and telemetry output.
 
 These additions could further increase usability, safety and technical sophistication.
+
+---
+
+## Disclaimer
+
+This project is intended for educational and experimental use only.
+
+It is not intended for use in safety-critical, medical, industrial,
+or commercial applications.
+
+The firmware is provided "as is", without any warranty of any kind.
+Use of this software and any associated or connected hardware is entirely at your own risk.
+
+The author shall not be liable for any damage, malfunction, data loss,
+personal injury, or other consequences resulting from the use,
+modification, integration, or reproduction of this project,
+including firmware, hardware designs, schematics, or PCB layouts.
 
 ---
 
