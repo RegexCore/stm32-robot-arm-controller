@@ -141,7 +141,7 @@ The software was designed with the following objectives in mind:
 
 The firmware is designed for the following hardware components:
 
-- **Microcontroller:** STM32F446RET6 (ARM Cortex-M4)
+- **Microcontroller platform:** ST Nucleo-F446RE (STM32F446RE, ARM Cortex-M4)
 - **PWM Servo Driver:** Adafruit 16-Channel 12-bit PWM / Servo Shield (PCA9685, I²C interface)
 - **Communication Interface:** USART2 (TX debug output)
 - **Wireless Debug Output:** HC-05 Bluetooth serial module
