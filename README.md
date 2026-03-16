@@ -895,6 +895,8 @@ These additions could further increase usability, safety and technical sophistic
 
 Copyright (c) 2026 Manuel Wiesinger
 
+All rights reserved.
+
 ---
 
 ## Third-party components
