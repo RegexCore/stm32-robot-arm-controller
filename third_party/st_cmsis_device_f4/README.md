@@ -3,8 +3,11 @@
 This directory provides licensing and upstream information for
 STMicroelectronics CMSIS Device F4 files used in this project.
 
-Upstream repository:
+Primary upstream repository:
 https://github.com/STMicroelectronics/cmsis-device-f4
+
+These files are also distributed as part of the STM32CubeF4 firmware package:
+https://github.com/STMicroelectronics/STM32CubeF4
 
 License:
 Apache License 2.0
