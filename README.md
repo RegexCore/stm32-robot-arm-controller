@@ -891,6 +891,12 @@ These additions could further increase usability, safety and technical sophistic
 
 ---
 
+## Copyright
+
+Copyright (c) 2026 Manuel Wiesinger
+
+---
+
 ## Third-party components
 
 This repository includes third-party embedded support software such as:
