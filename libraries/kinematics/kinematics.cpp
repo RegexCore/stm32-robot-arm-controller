@@ -1,14 +1,12 @@
 /*********************************************************************
 * Project     : Robot Arm Controller
 * File        : kinematics.cpp
-* Author      : Manuel Wiesinger
-* Created     : 24.02.2026
 *
 * Description :
 *   Forward and inverse kinematics of the robotic arm.
 *
+* SPDX-License-Identifier: MIT
 * Copyright (c) 2026 Manuel Wiesinger
-* All rights reserved.
 *********************************************************************/
 
 #include "kinematics.hpp"

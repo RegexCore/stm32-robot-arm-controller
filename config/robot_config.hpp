@@ -1,14 +1,12 @@
 /*********************************************************************
 * Project     : Robot Arm Controller
 * File        : robot_config.hpp
-* Author      : Manuel Wiesinger
-* Created     : 24.02.2026
 *
 * Description :
 *   Configuration data for the robot variants.
 *
+* SPDX-License-Identifier: MIT
 * Copyright (c) 2026 Manuel Wiesinger
-* All rights reserved.
 *********************************************************************/
 
 #pragma once

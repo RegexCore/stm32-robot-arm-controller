@@ -1,14 +1,12 @@
 /*********************************************************************
 * Project     : Robot Arm Controller
 * File        : joystick.hpp
-* Author      : Manuel Wiesinger
-* Created     : 24.02.2026
 *
 * Description :
 *   Reading and providing the joystick states.
 *
+* SPDX-License-Identifier: MIT
 * Copyright (c) 2026 Manuel Wiesinger
-* All rights reserved.
 *********************************************************************/
 
 #pragma once

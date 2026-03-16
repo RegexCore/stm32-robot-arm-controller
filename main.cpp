@@ -7,12 +7,10 @@ File        : main.cpp
 Purpose     : Generic application start
 
 Project     : Robot Arm Controller
-Author      : Manuel Wiesinger
-Created     : 24.02.2026
 Description : Main application entry for robotic arm control firmware
 
+* SPDX-License-Identifier: MIT
 * Copyright (c) 2026 Manuel Wiesinger
-* All rights reserved.
 *********************************************************************/
 
 #include <stdio.h>

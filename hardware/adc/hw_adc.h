@@ -1,15 +1,13 @@
 /*********************************************************************
 * Project     : Robot Arm Controller
 * File        : hw_adc.h
-* Author      : Manuel Wiesinger
-* Created     : 24.02.2026
 *
 * Description :
 *   ADC driver for acquisition of analog input values.
 *   ADC1 with DMA (DMA2, Stream 0, Channel 0)
 *
+* SPDX-License-Identifier: MIT
 * Copyright (c) 2026 Manuel Wiesinger
-* All rights reserved.
 *********************************************************************/
 
 #ifndef HW_ADC_H

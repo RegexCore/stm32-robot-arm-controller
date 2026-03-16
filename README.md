@@ -64,8 +64,8 @@ This project was developed as part of personal advanced training in embedded C++
 - [Build Notes](#build-notes)
 - [Possible Future Improvements](#possible-future-improvements)
 - [Author](#author)
-- [Copyright](#copyright)
-- [Third-party components](#third-party-components)
+- [License](#license)
+- [Third-Party Components](#third-party-components)
 
 ---
 
@@ -887,19 +887,21 @@ These additions could further increase usability, safety and technical sophistic
 
 ## Author
 
-**Manuel Wiesinger**
+Manuel Wiesinger
 
 ---
 
-## Copyright
+## License
+
+MIT License
 
 Copyright (c) 2026 Manuel Wiesinger
 
-All rights reserved.
+See the LICENSE file for details.
 
 ---
 
-## Third-party components
+## Third-Party Components
 
 This repository includes third-party embedded support software such as:
 

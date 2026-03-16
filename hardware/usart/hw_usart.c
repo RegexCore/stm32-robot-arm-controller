@@ -1,14 +1,12 @@
 /*********************************************************************
 * Project     : Robot Arm Controller
 * File        : hw_usart.c
-* Author      : Manuel Wiesinger
-* Created     : 24.02.2026
 *
 * Description :
 *   Hardware driver for the USART2 interface.
 *
+* SPDX-License-Identifier: MIT
 * Copyright (c) 2026 Manuel Wiesinger
-* All rights reserved.
 *********************************************************************/
 
 #include <stm32f4xx.h>

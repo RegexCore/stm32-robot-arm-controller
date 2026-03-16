@@ -1,14 +1,12 @@
 /*********************************************************************
 * Project     : Robot Arm Controller
 * File        : logger.c
-* Author      : Manuel Wiesinger
-* Created     : 24.02.2026
 *
 * Description :
 *   Logger for diagnostic and debug output via USART.
 *
+* SPDX-License-Identifier: MIT
 * Copyright (c) 2026 Manuel Wiesinger
-* All rights reserved.
 *********************************************************************/
 
 #include "logger.h"

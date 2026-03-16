@@ -1,14 +1,12 @@
 /*********************************************************************
 * Project     : Robot Arm Controller
 * File        : hw_gpio.h
-* Author      : Manuel Wiesinger
-* Created     : 24.02.2026
 *
 * Description :
 *   GPIO driver for push-button and switch inputs.
 *
+* SPDX-License-Identifier: MIT
 * Copyright (c) 2026 Manuel Wiesinger
-* All rights reserved.
 *********************************************************************/
 
 #ifndef HW_GPIO_H

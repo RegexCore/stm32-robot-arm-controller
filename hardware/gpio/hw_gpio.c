@@ -1,8 +1,6 @@
 /*********************************************************************
 * Project     : Robot Arm Controller
 * File        : hw_gpio.c
-* Author      : Manuel Wiesinger
-* Created     : 24.02.2026
 *
 * Description :
 *   GPIO driver for push-button and switch inputs.
@@ -11,8 +9,8 @@
 *   PC12 = Button 1 (Emergency Stop)
 *   PA15 = Button 2 (Auto mode on/off)
 *
+* SPDX-License-Identifier: MIT
 * Copyright (c) 2026 Manuel Wiesinger
-* All rights reserved.
 *********************************************************************/
 
 #include "hw_gpio.h"

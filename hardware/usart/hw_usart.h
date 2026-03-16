@@ -1,15 +1,13 @@
 /*********************************************************************
 * Project     : Robot Arm Controller
 * File        : hw_usart.h
-* Author      : Manuel Wiesinger
-* Created     : 24.02.2026
 *
 * Description :
 *   Hardware driver for the USART2 interface.
 *   PA2 = TX, PA3 = RX, AF7, USART2 TX only
 *
+* SPDX-License-Identifier: MIT
 * Copyright (c) 2026 Manuel Wiesinger
-* All rights reserved.
 *********************************************************************/
 
 #ifndef HW_USART_H

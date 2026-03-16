@@ -1,15 +1,13 @@
 /*********************************************************************
 * Project     : Robot Arm Controller
 * File        : hw_i2c.h
-* Author      : Manuel Wiesinger
-* Created     : 24.02.2026
 *
 * Description :
 *   Hardware driver for I2C1 communication.
 *   Low-level I2C1 driver (PB8 = SCL, PB9 = SDA, 100 kHz, AF4)
 *
+* SPDX-License-Identifier: MIT
 * Copyright (c) 2026 Manuel Wiesinger
-* All rights reserved.
 *********************************************************************/
 
 #ifndef HW_I2C_H
