@@ -891,16 +891,15 @@ These additions could further increase usability, safety and technical sophistic
 
 ---
 
-## Copyright
-
-Copyright (c) 2026 Manuel Wiesinger
-
-All rights reserved.
-
----
-
 ## Third-party components
 
-This repository contains third-party components such as ARM CMSIS, STMicroelectronics device files and SEGGER startup/linker files, which remain under their respective licenses.
+This repository includes third-party embedded support software such as:
+
+- ARM CMSIS Core
+- STMicroelectronics CMSIS Device (STM32F4)
+- SEGGER startup, linker and support files
+
+These components remain under their respective licenses.
+See the `third_party/` directory and individual file headers for details.
 
 ---
