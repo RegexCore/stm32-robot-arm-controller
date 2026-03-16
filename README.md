@@ -193,7 +193,7 @@ The TX signal is connected to an HC-05 Bluetooth module for wireless output of d
 
 <br>
 
-The robotic arm is operated via a custom designed control panel PCB developed in EasyEDA Pro.
+For this project, a dedicated control panel PCB was specifically designed and developed using EasyEDA Pro.
 
 The panel provides all necessary manual control inputs in a compact and robust hardware interface.  
 It integrates two analog joystick modules and multiple push buttons for mode selection and safety control.
