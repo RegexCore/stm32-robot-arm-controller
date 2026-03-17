@@ -20,7 +20,6 @@ void systick_init(void)
     // Update current core clock value
     SystemCoreClockUpdate();
 
-    // Output the current system frequency
     printf("[SysTick] Initialized with Core Clock: %lu Hz\r\n",
            (unsigned long)SystemCoreClock);
 
