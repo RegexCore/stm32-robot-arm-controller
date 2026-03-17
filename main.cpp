@@ -48,11 +48,11 @@ int main(void)
     PCA9685_Init(PCA9685_DEFAULT_ADDR, PCA9685_DEFAULT_FREQUENCY);
 
     uint32_t mhz   = SystemCoreClock / 1000000;
-    uint32_t centi = (SystemCoreClock % 1000000) / 10000;
+    uint32_t deci = (SystemCoreClock % 1000000) / 100000;
     
     Logger::printf("****** SYSTEM ******\n");
     Logger::printf("[Clock] System Core Clock: %d Hz (%d.%d MHz)\n",
-         SystemCoreClock, mhz, centi);
+         SystemCoreClock, mhz, deci);
     
     Logger::printf("[Init] Peripheral setup completed\n");
     Logger::printf("[Main] Program start\n");
