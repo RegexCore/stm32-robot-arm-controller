@@ -32,6 +32,8 @@ void systick_init(void)
         while (1);
     }
 
+    NVIC_SetPriority(SysTick_IRQn, 15);
+
     systick_time_ms = 0;
 }
 
