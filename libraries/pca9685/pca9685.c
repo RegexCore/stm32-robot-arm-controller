@@ -38,7 +38,7 @@ static void read_register(uint8_t addr, uint8_t reg, uint8_t *val)
 static void tiny_delay(void)
 {
     for (volatile uint32_t i = 0; i < 40000; ++i)
-        __asm__("nop");
+        __asm__ volatile ("nop");   // volatile so it is not optimized
 }
 
 static uint8_t calculate_prescale(uint32_t osc_hz, uint16_t freq_hz)
