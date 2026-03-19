@@ -24,7 +24,7 @@ The project combines low-level hardware access in C with higher-level control lo
 
 The software is designed with a modular architecture to ensure a clear separation between hardware abstraction, motion control, mathematical modelling, configuration data and shared data structures. This improves readability, maintainability and extensibility of the codebase.
 
-This project was developed as part of personal advanced training in embedded C++ and robotics.
+This project was developed as part of personal advanced training in embedded C/C++ and robotics.
 
 ---
 
