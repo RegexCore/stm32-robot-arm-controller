@@ -44,7 +44,7 @@ The system is ready for operation only after successful completion.
 
 Rotates the entire robotic arm around the vertical axis.
 
-![Axis 1](images/axis1.png)
+![Axis 1](images/axis1_base_rotation.png)
 
 *Figure: Axis 1 – base rotation.*
 
@@ -54,7 +54,7 @@ Rotates the entire robotic arm around the vertical axis.
 
 Moves the arm vertically and defines working height.
 
-![Axis 2](images/axis2.png)
+![Axis 2](images/axis2_shoulder.png)
 
 *Figure: Axis 2 – shoulder movement.*
 
@@ -64,7 +64,7 @@ Moves the arm vertically and defines working height.
 
 Extends or retracts the arm and enables positioning in depth direction.
 
-![Axis 3](images/axis3.png)
+![Axis 3](images/axis3_elbow.png)
 
 *Figure: Axis 3 – elbow movement.*
 
@@ -74,7 +74,7 @@ Extends or retracts the arm and enables positioning in depth direction.
 
 Tilts the gripper up and down to adjust tool orientation.
 
-![Axis 4](images/axis4.png)
+![Axis 4](images/axis4_tilt.png)
 
 *Figure: Axis 4 – gripper tilt.*
 
@@ -93,7 +93,7 @@ After activation:
 - Press left joystick → rotate in one direction  
 - Press right joystick → rotate in opposite direction  
 
-![Axis 5](images/axis5.png)
+![Axis 5](images/axis5_wrist_rotation.png)
 
 *Figure: Axis 5 – wrist rotation control.*
 
@@ -110,7 +110,7 @@ Press both joystick push buttons simultaneously to switch from wrist rotation mo
 - Press left joystick → open gripper  
 - Press right joystick → close gripper  
 
-![Gripper](images/gripper.png)
+![Gripper](images/gripper_control.png)
 
 *Figure: Gripper opening and closing.*
 
