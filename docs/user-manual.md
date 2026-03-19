@@ -34,9 +34,9 @@ The system is ready for operation only after successful completion.
 
 <div align="center">
 
-<img src="images/referencing.png" alt="Referencing Procedure" height="420">
+<img src="images/referencing.png" alt="Robotic arm axis configuration and designation" height="420">
 
-<sub><em>Figure: Automatic referencing movement after system startup.</em></sub>
+<sub><em>Figure: Axis configuration and designation of the robotic arm.</em></sub>
 
 </div>
 
@@ -50,7 +50,7 @@ Rotates the entire robotic arm around the vertical axis.
 
 <div align="center">
 
-<img src="images/axis1_base_rotation.png" alt="Axis 1" height="400">
+<img src="images/axis1_base_rotation.png" alt="Axis 1" height="700">
 
 <sub><em>Figure: Axis 1 – base rotation.</em></sub>
 
@@ -62,7 +62,7 @@ Moves the arm vertically and defines working height.
 
 <div align="center">
 
-<img src="images/axis2_shoulder.png" alt="Axis 2" height="400">
+<img src="images/axis2_shoulder.png" alt="Axis 2" height="700">
 
 <sub><em>Figure: Axis 2 – shoulder movement.</em></sub>
 
@@ -74,7 +74,7 @@ Extends or retracts the arm and enables positioning in depth direction.
 
 <div align="center">
 
-<img src="images/axis3_elbow.png" alt="Axis 3" height="400">
+<img src="images/axis3_elbow.png" alt="Axis 3" height="700">
 
 <sub><em>Figure: Axis 3 – elbow movement.</em></sub>
 
@@ -86,7 +86,7 @@ Tilts the gripper up and down to adjust tool orientation.
 
 <div align="center">
 
-<img src="images/axis4_tilt.png" alt="Axis 4" height="400">
+<img src="images/axis4_tilt.png" alt="Axis 4" height="700">
 
 <sub><em>Figure: Axis 4 – gripper tilt.</em></sub>
 
@@ -107,7 +107,7 @@ After activation:
 
 <div align="center">
 
-<img src="images/axis5_wrist_rotation.png" alt="Axis 5" height="400">
+<img src="images/axis5_wrist_rotation.png" alt="Axis 5" height="700">
 
 <sub><em>Figure: Axis 5 – wrist rotation control.</em></sub>
 
@@ -126,7 +126,7 @@ Press both joystick push buttons simultaneously to switch from wrist rotation mo
 
 <div align="center">
 
-<img src="images/gripper_control.png" alt="Gripper" height="400">
+<img src="images/gripper_control.png" alt="Gripper" height="700">
 
 <sub><em>Figure: Gripper opening and closing.</em></sub>
 
@@ -152,7 +152,7 @@ Manual Mode is intended for:
 
 <div align="center">
 
-<img src="images/manual_mode.png" alt="Manual Mode" height="400">
+<img src="images/manual_mode.png" alt="Manual Mode" height="700">
 
 <sub><em>Figure: Manual operation using the dual-joystick control panel.</em></sub>
 
@@ -173,7 +173,7 @@ Manual joystick inputs are disabled during automatic operation.
 
 <div align="center">
 
-<img src="images/automatic_mode.png" alt="Automatic Mode" height="400">
+<img src="images/automatic_mode.png" alt="Automatic Mode" height="700">
 
 <sub><em>Figure: Automatic workpiece transport cycle.</em></sub>
 
@@ -196,7 +196,7 @@ Before restarting operation:
 
 <div align="center">
 
-<img src="images/emergency_stop.png" alt="Emergency Stop" height="400">
+<img src="images/emergency_stop.png" alt="Emergency Stop" height="700">
 
 <sub><em>Figure: Emergency stop button on control panel.</em></sub>
 
