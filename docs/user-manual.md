@@ -18,7 +18,7 @@ Some figures in this document include a joystick 3D model.
 The joystick model “Joystick KY-023” by Thingiverse user UniversalXx  
 is licensed under Creative Commons Attribution-ShareAlike (CC-BY-SA).
 
-Full attribution details are provided in the main project README.
+Model source: https://www.thingiverse.com/thing:7005492
 
 ---
 
