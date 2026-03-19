@@ -1,30 +1,40 @@
 # Robotic Arm User Manual
 
-This document describes the operation and safe use of the robotic arm system during production use.
+This document describes the operation and safe use of the robotic arm system.
 
 The robotic arm is designed for automated picking, transportation and precise placement of workpieces between defined positions.
 
-The system can be operated in two modes:
+The system supports:
 
-- Manual mode via joystick control panel
-- Automatic mode using predefined motion sequences
+- Manual joystick control  
+- Automatic execution of predefined motion sequences  
+
+---
+
+## Image Attribution
+
+Some figures in this document include a joystick 3D model.
+
+The joystick model “Joystick KY-023” by Thingiverse user UniversalXx  
+is licensed under Creative Commons Attribution-ShareAlike (CC-BY-SA).
+
+Full attribution details are provided in the main project README.
 
 ---
 
 ## System Startup and Referencing
 
-After the system is powered on, the robotic arm automatically performs a calibration movement to its reference position.
+After power-up the robotic arm automatically performs a referencing procedure.
 
-During this referencing procedure:
+All axes move to their defined home positions to establish a consistent internal coordinate reference.
 
-- All axes move to their defined home positions
-- A consistent internal position reference is established
+⚠️ Do not interfere with the robot during referencing.
 
-⚠️ No manual intervention is allowed during referencing.
+The system is ready for operation only after successful completion.
 
-The robotic arm is ready for operation only after successful completion of the calibration process.
+![Referencing Procedure](images/referencing.png)
 
-![Robot Arm Referencing](images/referencing.png)
+*Figure: Automatic referencing movement after system startup.*
 
 ---
 
@@ -32,85 +42,77 @@ The robotic arm is ready for operation only after successful completion of the c
 
 ### Axis 1 – Base Rotation (A1)
 
-**Function**
+Rotates the entire robotic arm around the vertical axis.
 
-- Rotates the entire robotic arm around the vertical axis
-- Enables lateral positioning within the working area
+![Axis 1](images/axis1.png)
 
-![Axis 1 Base Rotation](images/axis1_base_rotation.png)
+*Figure: Axis 1 – base rotation.*
 
 ---
 
 ### Axis 2 – Shoulder Axis (A2)
 
-**Function**
+Moves the arm vertically and defines working height.
 
-- Moves the arm up and down
-- Defines working height and reach
+![Axis 2](images/axis2.png)
 
-![Axis 2 Shoulder](images/axis2_shoulder.png)
+*Figure: Axis 2 – shoulder movement.*
 
 ---
 
 ### Axis 3 – Elbow Axis (A3)
 
-**Function**
+Extends or retracts the arm and enables positioning in depth direction.
 
-- Extends or retracts the arm
-- Enables precise positioning in depth direction
+![Axis 3](images/axis3.png)
 
-![Axis 3 Elbow](images/axis3_elbow.png)
+*Figure: Axis 3 – elbow movement.*
 
 ---
 
 ### Axis 4 – Tool Tilt Axis (A4)
 
-**Function**
+Tilts the gripper up and down to adjust tool orientation.
 
-- Tilts the gripper up and down
-- Adjusts tool orientation
+![Axis 4](images/axis4.png)
 
-![Axis 4 Tilt](images/axis4_tilt.png)
+*Figure: Axis 4 – gripper tilt.*
 
 ---
 
 ### Axis 5 – Wrist Rotation (A5)
 
-**Function**
-
-- Rotates the gripper around its longitudinal axis
-- Allows correct alignment of the workpiece
+Rotates the gripper around its longitudinal axis.
 
 **Activation**
 
-The wrist rotation mode is activated by pressing both joystick push buttons simultaneously while the joysticks are in the center position.
+Press both joystick push buttons simultaneously while both joysticks are in the neutral position.
 
 After activation:
 
-- Pressing the left joystick rotates the gripper in one direction
-- Pressing the right joystick rotates the gripper in the opposite direction
+- Press left joystick → rotate in one direction  
+- Press right joystick → rotate in opposite direction  
 
-![Axis 5 Wrist Rotation](images/axis5_wrist_rotation.png)
+![Axis 5](images/axis5.png)
+
+*Figure: Axis 5 – wrist rotation control.*
 
 ---
 
-### Axis 6 – Gripper Drive (G6)
+### Axis 6 – Gripper (G6)
 
-**Function**
-
-- Opens and closes the gripper
-- Enables picking and releasing of workpieces
+Opens and closes the gripper for workpiece handling.
 
 **Activation**
 
-The gripper control mode is activated by pressing both joystick push buttons simultaneously while the joysticks are centered.
+Press both joystick push buttons simultaneously to switch from wrist rotation mode back to gripper control mode.
 
-After activation:
+- Press left joystick → open gripper  
+- Press right joystick → close gripper  
 
-- Pressing the left joystick opens the gripper
-- Pressing the right joystick closes the gripper
+![Gripper](images/gripper.png)
 
-![Gripper Control](images/gripper_control.png)
+*Figure: Gripper opening and closing.*
 
 ---
 
@@ -118,73 +120,58 @@ After activation:
 
 ### Manual Mode
 
-In manual mode the robotic arm is directly controlled via the joystick control panel.
+In **Manual Mode**, the robotic arm is controlled directly via the joystick control panel.
 
-Characteristics:
+- Joystick movement controls axis direction and speed  
+- Push buttons control tool functions  
 
-- Each joystick axis directly controls a corresponding robot axis
-- Joystick deflection defines movement direction and speed
-- Joystick push buttons control gripper functions
+Manual Mode is intended for:
 
-Manual mode is mainly used for:
+- Setup and adjustment  
+- Testing movements  
+- Maintenance  
+- Teaching positions  
 
-- Setup and adjustment
-- Testing movements
-- Maintenance work
-- Teaching positions
+![Manual Mode](images/manual_mode.png)
 
-Switching to automatic mode is possible via the operating mode selector switch, provided the robotic arm is in a safe and defined state.
-
-![Manual Operation](images/manual_mode.png)
+*Figure: Manual operation using the dual-joystick control panel.*
 
 ---
 
 ### Automatic Mode
 
-In automatic mode the robotic arm executes predefined motion sequences autonomously.
+In **Automatic Mode**, the robotic arm executes predefined motion sequences.
 
 Typical process:
 
-1. Move to predefined pick position  
-2. Grip the workpiece  
-3. Transport along programmed motion path  
-4. Place the workpiece at target position  
+1. Move to pick position  
+2. Grip workpiece  
+3. Transport along programmed path  
+4. Place workpiece at target position  
 
-All movements are executed reproducibly within configured limits for:
+Manual joystick inputs are disabled during automatic operation.
 
-- motion range
-- speed
-- acceleration
+![Automatic Mode](images/automatic_mode.png)
 
-⚠️ Manual joystick inputs are disabled during automatic operation.
-
-Switching back to manual mode is possible via the operating mode selector.
-
-![Automatic Operation](images/automatic_mode.png)
+*Figure: Automatic workpiece transport cycle.*
 
 ---
 
 ## Emergency Stop
 
-The system provides an emergency stop function for hazardous situations.
+The system includes an emergency stop function.
 
-When the emergency stop is activated:
+When activated:
 
-- All robot motion is immediately stopped
+- All robot motion stops immediately  
 
-Before resuming operation:
+Before restarting operation:
 
-- The system must be inspected
-- The cause of the emergency stop must be resolved
+- Inspect the system  
+- Resolve the cause of the stop condition  
 
 ![Emergency Stop](images/emergency_stop.png)
 
+*Figure: Emergency stop button on control panel.*
+
 ---
-
-## Safety Notes
-
-- Do not reach into the robot workspace during operation
-- Ensure referencing procedure is completed before use
-- Use manual mode only for setup and maintenance
-- Verify safe conditions before enabling automatic mode
-- Always test new motion sequences at reduced speed
