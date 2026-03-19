@@ -38,7 +38,7 @@ The system is ready for operation only after successful completion.
 
 <img src="images/referencing.png" alt="Robotic arm axis configuration and designation" height="420">
 
-<sub><em>Figure: Axis configuration and designation of the robotic arm.</em></sub>
+<em>Figure: Axis configuration and designation of the robotic arm.</em>
 
 </div>
 
@@ -54,7 +54,7 @@ Rotates the entire robotic arm around the vertical axis.
 
 <img src="images/axis1_base_rotation.png" alt="Axis 1" width="630">
 
-<sub><em>Figure: Axis 1 – base rotation.</em></sub>
+<em>Figure: Axis 1 – base rotation.</em>
 
 </div>
 
@@ -66,7 +66,7 @@ Moves the arm vertically and defines working height.
 
 <img src="images/axis2_shoulder.png" alt="Axis 2" width="630">
 
-<sub><em>Figure: Axis 2 – shoulder movement.</em></sub>
+<em>Figure: Axis 2 – shoulder movement.</em>
 
 </div>
 
@@ -78,7 +78,7 @@ Extends or retracts the arm and enables positioning in depth direction.
 
 <img src="images/axis3_elbow.png" alt="Axis 3" width="630">
 
-<sub><em>Figure: Axis 3 – elbow movement.</em></sub>
+<em>Figure: Axis 3 – elbow movement.</em>
 
 </div>
 
@@ -90,7 +90,7 @@ Tilts the gripper up and down to adjust tool orientation.
 
 <img src="images/axis4_tilt.png" alt="Axis 4" width="630">
 
-<sub><em>Figure: Axis 4 – gripper tilt.</em></sub>
+<em>Figure: Axis 4 – gripper tilt.</em>
 
 </div>
 
@@ -111,7 +111,7 @@ After activation:
 
 <img src="images/axis5_wrist_rotation.png" alt="Axis 5" width="630">
 
-<sub><em>Figure: Axis 5 – wrist rotation control.</em></sub>
+<em>Figure: Axis 5 – wrist rotation control.</em>
 
 </div>
 
@@ -130,7 +130,7 @@ Press both joystick push buttons simultaneously to switch from wrist rotation mo
 
 <img src="images/gripper_control.png" alt="Gripper" width="630">
 
-<sub><em>Figure: Gripper opening and closing.</em></sub>
+<em>Figure: Gripper opening and closing.</em>
 
 </div>
 
@@ -156,7 +156,7 @@ Manual Mode is intended for:
 
 <img src="images/manual_mode.png" alt="Manual Mode" width="630">
 
-<sub><em>Figure: Manual operation using the dual-joystick control panel.</em></sub>
+<em>Figure: Manual operation using the dual-joystick control panel.</em>
 
 </div>
 
@@ -177,7 +177,7 @@ Manual joystick inputs are disabled during automatic operation.
 
 <img src="images/automatic_mode.png" alt="Automatic Mode" width="630">
 
-<sub><em>Figure: Automatic workpiece transport cycle.</em></sub>
+<em>Figure: Automatic workpiece transport cycle.</em>
 
 </div>
 
@@ -200,7 +200,7 @@ Before restarting operation:
 
 <img src="images/emergency_stop.png" alt="Emergency Stop" width="630">
 
-<sub><em>Figure: Emergency stop button on control panel.</em></sub>
+<em>Figure: Emergency stop button on control panel.</em>
 
 </div>
 
