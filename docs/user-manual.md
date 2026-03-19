@@ -32,6 +32,8 @@ All axes move to their defined home positions to establish a consistent internal
 
 The system is ready for operation only after successful completion.
 
+---
+
 <div align="center">
 
 <img src="images/referencing.png" alt="Robotic arm axis configuration and designation" height="420">
