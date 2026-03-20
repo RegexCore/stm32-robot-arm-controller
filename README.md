@@ -189,6 +189,14 @@ Each robot axis servo is connected to a dedicated PWM output channel of the serv
 
 The remaining PWM channels are currently unused and may be used for future extensions such as additional degrees of freedom or auxiliary actuators.
 
+## User Documentation
+
+Detailed instructions for operating the robotic arm,
+including axis control, joystick functions and automatic motion sequences,
+are provided in the user manual:
+
+**[Robotic Arm User Manual](docs/user-manual.md)**
+
 ### Analog Input Channels
 
 The joystick positions are acquired through ADC channels:
