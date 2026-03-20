@@ -143,10 +143,51 @@ The firmware is designed for the following hardware components:
 
 - **Microcontroller Platform:** ST Nucleo-F446RE development board (STM32F446RE, ARM Cortex-M4)
 - **Robot Manipulator Platform:** Joy-IT multi-axis robotic arm kit with integrated hobby servo drives
-- **External PWM Servo Controller:** Adafruit 16-Channel 12-bit PWM / Servo Driver board (PCA9685, I²C interface)
+- **External PWM Servo Controller:** Adafruit PCA9685 16-Channel PWM Servo Shield (I²C interface)
 - **Wireless Debug Communication Module:** HC-05 Bluetooth serial transceiver connected to a UART interface of the microcontroller (TX debug output)
 - **Manual Control Interface:** Custom dual-axis analog joystick robot control panel PCB
 - **Digital Input Devices:** Emergency stop push button, automatic mode selection switch and joystick push buttons located on the control panel
+
+### External Servo Controller (PCA9685 Servo Shield)
+
+The robotic arm servos are driven by an external PWM controller.
+
+The system uses an  
+**Adafruit 16-Channel PWM / Servo Shield (PCA9685, I²C interface)**  
+which provides 12-bit PWM signal generation for up to 16 servo channels.
+
+Key characteristics:
+
+- I²C controlled PWM generation
+- 12-bit resolution
+- Configurable output frequency (typically 50 Hz for hobby servos)
+- Stackable shield design
+- Logic voltage compatible with 3.3 V and 5 V systems
+- Maximum PWM frequency up to approx. 1.6 kHz
+
+The shield is connected to the STM32 microcontroller via the I²C bus and is responsible for generating all servo control signals.
+
+The servo supply voltage is provided by an external power supply
+connected directly to the servo shield power terminals.
+The microcontroller board is not used to power the servos.
+
+A common ground connection between the servo power supply,
+servo shield and microcontroller is required for reliable operation.
+
+### Servo Channel Assignment
+
+Each robot axis servo is connected to a dedicated PWM output channel of the servo shield.
+
+| Motor ID | Robot Axis | PCA9685 PWM Channel |
+|---------|-----------|---------------------|
+| Motor 0 | A1 – Base rotation | PWM channel 0 |
+| Motor 1 | A2 – Shoulder axis | PWM channel 1 |
+| Motor 2 | A3 – Elbow axis | PWM channel 2 |
+| Motor 3 | A4 – Tool tilt | PWM channel 3 |
+| Motor 4 | A5 – Wrist rotation | PWM channel 4 |
+| Motor 5 | G6 – Gripper | PWM channel 5 |
+
+The remaining PWM channels are currently unused and may be used for future extensions such as additional degrees of freedom or auxiliary actuators.
 
 ### Analog Input Channels
 
