@@ -189,7 +189,7 @@ Each robot axis servo is connected to a dedicated PWM output channel of the serv
 
 The remaining PWM channels are currently unused and may be used for future extensions such as additional degrees of freedom or auxiliary actuators.
 
-## User Documentation
+### User Documentation
 
 Detailed instructions for operating the robotic arm,
 including axis control, joystick functions and automatic motion sequences,
