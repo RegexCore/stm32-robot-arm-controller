@@ -814,6 +814,30 @@ Automatic mode is especially useful for tasks such as point-to-point transport o
 
 The kinematics model is a central element of the project because it allows the software to translate between mathematical robot motion and actual servo commands.
 
+### Current Kinematic Model Limitations
+
+The current kinematic implementation models only two arm segments:
+
+- L1 → upper arm
+- L2 → forearm
+
+The effective tool center point is currently assumed to coincide with the wrist joint axis.
+
+A possible additional offset caused by the physical gripper length is currently not included
+in the inverse kinematics model.
+
+This modelling simplification is an intentional design decision and was chosen deliberately to:
+
+- reduce mathematical complexity,
+- simplify initial testing and validation,
+- focus on reliable base functionality on the embedded target system.
+
+The current software architecture already allows future extension of the kinematic model
+without major structural changes.
+
+Future versions of the firmware may extend the inverse kinematics model
+by introducing a tool center point offset parameter.
+
 ### Why Offsets Are Necessary
 
 The mathematical kinematic model assumes a clearly defined zero reference position.
@@ -922,6 +946,9 @@ Because this is embedded target firmware, the project is not intended to be comp
 
 Potential future extensions of the project include:
 
+* extension of the inverse kinematics model by introducing
+  a tool center point offset (distance from wrist joint to gripper tip),
+  enabling accurate Cartesian positioning of the end effector
 * trajectory planning instead of simple point-to-point movement,
 * acceleration and deceleration profiles for smoother motion,
 * closed-loop feedback using sensors,
