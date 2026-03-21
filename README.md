@@ -818,42 +818,84 @@ The kinematics model is a central element of the project because it allows the s
 
 The current kinematic implementation models only two arm segments:
 
-- L1 → upper arm
-- L2 → forearm
+<p align="center">
+  <img src="docs/images/robot-arm-kinematics-overview.png" width="700">
+  <br>
+  <em>
+  Figure: Current simplified kinematic model.
+  Inverse kinematics is solved for the wrist joint position.
+  Tool center point offsets caused by the physical gripper length are not yet considered.
+  </em>
+</p>
+
+- L1 → upper arm  
+- L2 → forearm  
 
 The effective tool center point is currently assumed to coincide with the wrist joint axis.
 
-A possible additional offset caused by the physical gripper length is currently not included
+A possible additional offset caused by the physical gripper length is currently not included  
 in the inverse kinematics model.
 
 This modelling simplification is an intentional design decision and was chosen deliberately to:
 
-- reduce mathematical complexity,
-- simplify initial testing and validation,
-- focus on reliable base functionality on the embedded target system.
+- reduce mathematical complexity  
+- simplify initial testing and validation  
+- focus on reliable base functionality on the embedded target system  
 
-The current software architecture already allows future extension of the kinematic model
+The current software architecture already allows future extension of the kinematic model  
 without major structural changes.
 
-Future versions of the firmware may extend the inverse kinematics model
+Future versions of the firmware may extend the inverse kinematics model  
 by introducing a tool center point offset parameter.
+
+### Kinematic Reference Alignment (Servo Offset Calibration)
+
+For correct operation of the kinematic model, each robot joint must be aligned  
+to a defined mechanical reference position.
+
+In the current implementation, the kinematic zero position is defined such that:
+
+- the arm segments are oriented forward as shown in the figure  
+- this physical pose corresponds to **0° joint angle** in the mathematical model  
+
+Because hobby servos cannot be mounted with perfect angular precision,  
+a per-joint **servo offset calibration** is required.
+
+The calibration procedure is conceptually as follows:
+
+1. Move the robot manually or via software into the defined reference pose  
+   (all arm segments aligned in the forward direction).
+2. Measure or estimate the deviation between the physical servo position  
+   and the desired mathematical zero angle.
+3. Store this deviation as a fixed offset parameter for the corresponding joint.
+4. During runtime, the kinematics module compensates this offset  
+   when converting between kinematic joint angles and servo command angles.
+
+This ensures that:
+
+- a kinematic angle of **0°** results in the correct physical arm orientation  
+- forward and inverse kinematics operate on a consistent geometric model  
+- installation tolerances and mechanical mounting errors are compensated  
 
 ### Why Offsets Are Necessary
 
-The mathematical kinematic model assumes a clearly defined zero reference position.
+The mathematical kinematic model assumes a clearly defined zero reference position.  
 In the real mechanical system, however, the servos may not be mounted exactly in that reference orientation.
 
 Therefore, offset values are used to align the servo reference positions with the kinematic model.
 
 ### Why Inversion Is Necessary
 
-Depending on servo installation and linkage direction, a positive motor command may correspond either to a positive or a negative mathematical rotation.
+Depending on servo installation and linkage direction, a positive motor command  
+may correspond either to a positive or a negative mathematical rotation.
 
-The inversion settings allow the software to handle this cleanly without changing the kinematic formulas themselves.
+The inversion settings allow the software to handle this cleanly  
+without changing the kinematic formulas themselves.
 
 ### Result
 
-By separating the pure kinematic model from installation-dependent corrections, the code remains mathematically clean while still being adaptable to the physical robot.
+By separating the pure kinematic model from installation-dependent corrections,  
+the code remains mathematically clean while still being adaptable to the physical robot.
 
 ---
 
