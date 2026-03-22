@@ -64,7 +64,7 @@ This project was developed as part of personal advanced training in embedded C /
 - [Build Notes](#build-notes)
 - [Possible Future Improvements](#possible-future-improvements)
 - [Disclaimer](#disclaimer)
-- [Author](#author)
+- [Project Information](#project-information)
 - [License](#license)
 - [Third-Party Components](#third-party-components)
 
@@ -1021,9 +1021,11 @@ including firmware, hardware designs, schematics, or PCB layouts.
 
 ---
 
-## Author
+## Project Information
 
-Manuel Wiesinger
+- Author: Manuel Wiesinger
+- Development period: February – March 2026
+- Status: Functional prototype
 
 ---
 
