@@ -1024,7 +1024,7 @@ including firmware, hardware designs, schematics, or PCB layouts.
 ## Project Information
 
 - Author: Manuel Wiesinger
-- Development period: February – March 2026
+- Initial development: February 2026
 - Status: Functional prototype
 
 ---
