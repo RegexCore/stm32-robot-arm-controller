@@ -139,6 +139,22 @@ The software was designed with the following objectives in mind:
   <em>Figure: Hardware architecture of the robotic arm control platform.</em>
 </p>
 
+### STM32 Pin Configuration
+
+<p align="center">
+  <img src="docs/images/stm32-cubemx-pinout.png" width="700"><br>
+  <em>Figure: STM32CubeMX pin configuration used for the robotic arm controller firmware.</em>
+</p>
+
+The following figure shows the STM32 pin assignment and peripheral configuration
+used in the project. It illustrates the mapping of ADC channels, GPIO inputs,
+USART debug output and the I²C connection to the PCA9685 servo controller.
+
+The configuration was created with STM32CubeMX and reflects the hardware setup
+used by the firmware on the Nucleo-F446RE platform.
+
+The corresponding STM32CubeMX project file (`.ioc`) is included in the repository.
+
 The firmware is designed for the following hardware components:
 
 - **Microcontroller Platform:** ST Nucleo-F446RE development board (STM32F446RE, ARM Cortex-M4)
