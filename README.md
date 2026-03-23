@@ -1,6 +1,6 @@
 # Robot Arm Controller Firmware
 
-Embedded firmware for a multi-axis robotic arm based on an STM32 microcontroller.  
+Embedded firmware for a **6-DOF robotic arm with gripper** based on an STM32 microcontroller.
 The project combines low-level hardware access in C with higher-level control logic in C++ and provides both **manual joystick control** and **automatic positioning using forward and inverse kinematics**.
 
 <p align="center">
