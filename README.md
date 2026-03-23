@@ -147,6 +147,9 @@ The firmware is designed for the following hardware components:
 - **Wireless Debug Communication Module:** HC-05 Bluetooth serial transceiver connected to a UART interface of the microcontroller (TX debug output)
 - **Manual Control Interface:** Custom dual-axis analog joystick robot control panel PCB
 - **Digital Input Devices:** Emergency stop push button, automatic mode selection switch and joystick push buttons located on the control panel
+- **Control Panel Interconnection Cable:** 
+  40-pin IDC ribbon cable extension (approx. 10 cm) used to connect the 
+  custom joystick control panel PCB with the STM32 control electronics.
 
 ### External Servo Controller (PCA9685 Servo Shield)
 
