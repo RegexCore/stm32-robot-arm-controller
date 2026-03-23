@@ -57,7 +57,7 @@ This project was developed as part of personal advanced training in embedded C /
 - [Control Concept](#control-concept)
   - [Manual Mode](#manual-mode)
   - [Automatic Mode](#automatic-mode)
-- [User Documentation](#user-documentation)
+- [User Manual](#user-manual)
 - [Kinematics Concept](#kinematics-concept)
 - [Timing and Real-Time Behaviour](#timing-and-real-time-behaviour)
 - [Safety Mechanisms](#safety-mechanisms)
@@ -822,7 +822,7 @@ Automatic mode is especially useful for tasks such as point-to-point transport o
 
 ---
 
-## User Documentation
+## User Manual
 
 Detailed instructions for operating the robotic arm,
 including axis control, joystick functions and automatic motion sequences,
