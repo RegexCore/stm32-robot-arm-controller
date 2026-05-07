@@ -30,44 +30,93 @@ This project was developed as part of personal advanced training in embedded C /
 
 ## Table of Contents
 
-- [Project Overview](#project-overview)
-- [How the System Works](#how-the-system-works)
-- [Objectives](#objectives)
-- [Key Features](#key-features)
-- [Hardware Platform](#hardware-platform)
-- [Software Architecture](#software-architecture)
-- [Project Structure](#project-structure)
-- [Module Description](#module-description)
+- [Robot Arm Controller Firmware](#robot-arm-controller-firmware)
+  - [Engineering Highlights](#engineering-highlights)
+  - [Table of Contents](#table-of-contents)
+  - [Project Overview](#project-overview)
+  - [How the System Works](#how-the-system-works)
+  - [Objectives](#objectives)
+  - [Key Features](#key-features)
+  - [Hardware Platform](#hardware-platform)
+    - [STM32F446 Pin Configuration](#stm32f446-pin-configuration)
+    - [External Servo Controller (PCA9685 Servo Shield)](#external-servo-controller-pca9685-servo-shield)
+    - [Servo Channel Assignment](#servo-channel-assignment)
+    - [Analog Input Channels](#analog-input-channels)
+    - [Digital Input Pins](#digital-input-pins)
+    - [USART Interface](#usart-interface)
+    - [Control Panel](#control-panel)
+      - [Main Features](#main-features)
+      - [Electrical Interface](#electrical-interface)
+  - [Software Architecture](#software-architecture)
+  - [Project Structure](#project-structure)
+  - [Module Description](#module-description)
   - [Configuration (`config/`)](#configuration-config)
   - [Control Logic (`controller/`)](#control-logic-controller)
+    - [Responsibilities of `RobotController`](#responsibilities-of-robotcontroller)
+    - [Control Cycle](#control-cycle)
   - [Hardware Abstraction (`hardware/`)](#hardware-abstraction-hardware)
     - [ADC](#adc)
+      - [Main Characteristics](#main-characteristics)
+      - [Used Channels](#used-channels)
     - [GPIO](#gpio)
+      - [Defined Inputs](#defined-inputs)
     - [Timer](#timer)
+      - [1. Periodic Control Interrupt (TIM7)](#1-periodic-control-interrupt-tim7)
+      - [2. SysTick Timer](#2-systick-timer)
     - [USART](#usart)
-    - [I²C](#i2c)
+      - [Main Characteristics](#main-characteristics-1)
+    - [I2C](#i2c)
   - [Functional Libraries (`libraries/`)](#functional-libraries-libraries)
     - [Diagnostic Logger](#diagnostic-logger)
+      - [Features](#features)
     - [Joystick](#joystick)
+    - [Responsibilities](#responsibilities)
     - [Kinematics](#kinematics)
+      - [Core Functionality](#core-functionality)
+      - [Forward Kinematics](#forward-kinematics)
+      - [Inverse Kinematics](#inverse-kinematics)
+      - [Offset and Inversion Handling](#offset-and-inversion-handling)
     - [PCA9685 Servo Driver](#pca9685-servo-driver)
+      - [Main Characteristics](#main-characteristics-2)
+      - [Driver Tasks](#driver-tasks)
     - [Servo Controller](#servo-controller)
+      - [Responsibilities](#responsibilities-1)
+      - [Initialization](#initialization)
+      - [Smooth Motion](#smooth-motion)
+      - [Safety Behaviour](#safety-behaviour)
   - [Data Model (`model/`)](#data-model-model)
   - [Application Entry Point (`main.cpp`)](#application-entry-point-maincpp)
-- [Control Concept](#control-concept)
+    - [Startup Sequence](#startup-sequence)
+    - [Main Loop](#main-loop)
+  - [Control Concept](#control-concept)
   - [Manual Mode](#manual-mode)
   - [Automatic Mode](#automatic-mode)
-- [User Manual](#user-manual)
-- [Kinematics Concept](#kinematics-concept)
-- [Timing and Real-Time Behaviour](#timing-and-real-time-behaviour)
-- [Safety Mechanisms](#safety-mechanisms)
-- [Development Environment](#development-environment)
-- [Build Notes](#build-notes)
-- [Possible Future Improvements](#possible-future-improvements)
-- [Disclaimer](#disclaimer)
-- [Project Information](#project-information)
-- [License](#license)
-- [Third-Party Components](#third-party-components)
+  - [User Manual](#user-manual)
+  - [Kinematics Concept](#kinematics-concept)
+    - [Current Kinematic Model Limitations](#current-kinematic-model-limitations)
+    - [Kinematic Reference Alignment (Servo Offset Calibration)](#kinematic-reference-alignment-servo-offset-calibration)
+    - [Why Offsets Are Necessary](#why-offsets-are-necessary)
+    - [Why Inversion Is Necessary](#why-inversion-is-necessary)
+    - [Result](#result)
+  - [Timing and Real-Time Behaviour](#timing-and-real-time-behaviour)
+    - [Control Cycle](#control-cycle-1)
+    - [Time Base](#time-base)
+    - [ADC Behaviour](#adc-behaviour)
+  - [Safety Mechanisms](#safety-mechanisms)
+    - [Emergency Stop](#emergency-stop)
+    - [Angle Limits](#angle-limits)
+    - [Controlled Motion](#controlled-motion)
+    - [Structured Control Scheduling](#structured-control-scheduling)
+  - [Software Quality](#software-quality)
+    - [I²C Communication Signal Analysis](#ic-communication-signal-analysis)
+    - [UART / Bluetooth Debug Output](#uart--bluetooth-debug-output)
+  - [Development Environment](#development-environment)
+  - [Build Notes](#build-notes)
+  - [Possible Future Improvements](#possible-future-improvements)
+  - [Disclaimer](#disclaimer)
+  - [Project Information](#project-information)
+  - [License](#license)
+  - [Third-Party Components](#third-party-components)
 
 ---
 
@@ -970,6 +1019,32 @@ Target positions are approached gradually instead of through abrupt jumps.
 The control logic is executed through a periodic scheduling concept rather than uncontrolled direct processing.
 
 Together, these measures reduce the risk of invalid or dangerous movements and improve system robustness.
+
+---
+
+## Software Quality
+
+To verify correct behaviour and ensure reliable operation, the following quality measures were applied during development:
+
+- Debug output used for plausibility checking of sensor and control values
+- I²C signals and timing analyzed using an oscilloscope
+- Limit values verified and boundary conditions checked
+- Tests conducted under real operating conditions
+- Software tested for stable and smooth arm movements
+
+### I²C Communication Signal Analysis
+
+<p align="center">
+  <img src="docs/images/i2c-communication.png" width="700"><br>
+  <em>Figure: I²C bus signal captured with an oscilloscope during PCA9685 communication.</em>
+</p>
+
+### UART / Bluetooth Debug Output
+
+<p align="center">
+  <img src="docs/images/uart-bt-communication.png" width="700"><br>
+  <em>Figure: UART debug output transmitted wirelessly via Bluetooth HC-05 module.</em>
+</p>
 
 ---
 
