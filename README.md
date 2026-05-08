@@ -48,6 +48,7 @@ This project was developed as part of personal advanced training in embedded C /
       - [Main Features](#main-features)
       - [Electrical Interface](#electrical-interface)
   - [Software Architecture](#software-architecture)
+    - [Design Principles](#design-principles)
   - [Project Structure](#project-structure)
   - [Module Description](#module-description)
   - [Configuration (`config/`)](#configuration-config)
@@ -351,6 +352,79 @@ At a high level, the project can be divided into the following areas:
   Startup and system orchestration
 
 This modular approach makes it easier to extend the robot, replace hardware-specific implementations or adapt the system to other robot configurations.
+
+### Design Principles
+
+Two fundamental software engineering principles guided the design of this firmware:
+**low coupling** and **high cohesion**.
+Applying both consistently results in a codebase that is easier to understand, maintain and extend.
+
+#### Low Coupling
+
+Low coupling means that modules interact with each other only through well-defined, minimal interfaces
+and do not depend on each other's internal implementation details.
+
+In this project, low coupling is achieved through several concrete design decisions:
+
+- **Hardware abstraction isolates peripheral code.**  
+  The higher-level C++ application logic never accesses STM32 registers directly.
+  All register-level operations are encapsulated inside the dedicated hardware drivers.
+  Replacing or modifying a peripheral driver does not require changes to the application.
+
+- **I²C transport is separated from the PCA9685 device driver.**  
+  The I²C hardware module handles only generic bus communication.
+  The PCA9685 driver builds on top of it and remains focused on PWM and servo-related register logic.
+  Neither module needs to know the internals of the other.
+
+- **`RobotController` receives its dependencies by reference.**  
+  The objects `Joystick`, `Kinematics` and `ServoController` are created in `main()` and passed into
+  `RobotController` by reference. The controller coordinates their interaction but does not own them
+  and is not responsible for their lifecycle. This makes each component independently testable
+  and replaceable without modifying the controller itself.
+
+- **C hardware drivers and C++ application modules are kept separate.**  
+  The C-based drivers in `hardware/` expose a plain C interface and have no knowledge of any C++ class.
+  The C++ modules in `libraries/` and `controller/` call the C drivers through their public API only.
+
+#### High Cohesion
+
+High cohesion means that each module has a single, clearly defined responsibility
+and contains only the functionality that directly belongs to that purpose.
+
+In this project, every module is focused on exactly one concern:
+
+| Module | Single responsibility |
+|---|---|
+| `hw_adc` | ADC peripheral initialisation and DMA-based value acquisition |
+| `hw_gpio` | GPIO pin configuration and digital input reading |
+| `hw_i2c` | Low-level I²C bus communication |
+| `hw_usart` | USART transmit initialisation and byte output |
+| `timer_interrupt` | Periodic control tick generation via TIM7 |
+| `pca9685` | PCA9685 PWM controller configuration and channel output |
+| `Joystick` | Acquisition and storage of the complete user input panel state |
+| `Kinematics` | Forward and inverse kinematic calculations |
+| `ServoController` | Servo angle management, limit enforcement and smooth motion |
+| `Logger` | Formatted diagnostic output forwarded to USART |
+| `robot_config.hpp` | Central storage of all robot-specific configuration constants |
+| `model/types.hpp` | Shared lightweight data structures without business logic |
+| `RobotController` | System coordination and operating mode management |
+
+Because each module handles only its own concern, a change in one area
+(for example replacing the servo driver or extending the kinematics model)
+does not require unrelated modules to be modified.
+
+#### Combined Effect
+
+Low coupling and high cohesion complement each other directly:
+high cohesion ensures each module has a focused purpose,
+while low coupling ensures the connections between modules remain minimal and clean.
+
+Together, these principles improve:
+
+- **Maintainability** — changes are localised and do not propagate through the codebase,
+- **Readability** — each file has a clear and understandable scope,
+- **Extensibility** — new features can be added without restructuring existing modules,
+- **Reliability** — isolated modules are easier to verify and less likely to cause side effects.
 
 ---
 
