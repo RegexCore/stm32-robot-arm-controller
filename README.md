@@ -49,6 +49,9 @@ This project was developed as part of personal advanced training in embedded C /
       - [Electrical Interface](#electrical-interface)
   - [Software Architecture](#software-architecture)
     - [Design Principles](#design-principles)
+      - [Low Coupling](#low-coupling)
+      - [Dependency Injection](#dependency-injection)
+      - [High Cohesion](#high-cohesion)
   - [Project Structure](#project-structure)
   - [Module Description](#module-description)
   - [Configuration (`config/`)](#configuration-config)
@@ -355,9 +358,9 @@ This modular approach makes it easier to extend the robot, replace hardware-spec
 
 ### Design Principles
 
-Two fundamental software engineering principles guided the design of this firmware:
-**low coupling** and **high cohesion**.
-Applying both consistently results in a codebase that is easier to understand, maintain and extend.
+Three fundamental software engineering principles guided the design of this firmware:
+**low coupling**, **dependency injection** and **high cohesion**.
+Applying them consistently results in a codebase that is easier to understand, maintain and extend.
 
 #### Low Coupling
 
@@ -385,6 +388,35 @@ In this project, low coupling is achieved through several concrete design decisi
 - **C hardware drivers and C++ application modules are kept separate.**  
   The C-based drivers in `hardware/` expose a plain C interface and have no knowledge of any C++ class.
   The C++ modules in `libraries/` and `controller/` call the C drivers through their public API only.
+
+#### Dependency Injection
+
+This firmware uses constructor-based dependency injection for central control components.
+`RobotController` does not create `Joystick`, `Kinematics` or `ServoController` internally.
+Instead, all required collaborators are created in `main()` and injected via references.
+
+This has practical advantages for embedded systems:
+
+- **Predictable ownership and lifetime**  
+  Object lifetime is explicit and controlled at application startup.
+- **Better testability**  
+  `RobotController` can be tested with alternative implementations or controlled test doubles.
+- **Lower module coupling**  
+  The controller depends only on behaviour exposed by its collaborators, not on their construction.
+- **Simpler replacement of subsystems**  
+  Components can be exchanged (for example a different servo controller strategy) with minimal impact.
+
+Current wiring follows this pattern:
+
+```cpp
+Joystick joystick;
+Kinematics kinematics(config::activeConfig.upperArmLength,
+                      config::activeConfig.lowerArmLength);
+ServoController servocontroller(joystick);
+RobotController robotcontroller(joystick, kinematics, servocontroller);
+```
+
+This explicit assembly in one place keeps startup behaviour transparent and avoids hidden dependencies.
 
 #### High Cohesion
 
