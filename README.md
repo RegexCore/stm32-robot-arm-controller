@@ -338,19 +338,9 @@ This dedicated hardware interface enables precise and ergonomic real-time contro
 
 ## Software Architecture
 
-The following class diagram shows the core software components and their most relevant relationships.
-The colours group the classes into architectural layers:
-🟦 Application · 🟩 Libraries · 🟨 Data Model · 🟪 Hardware Drivers.
+The following class diagram shows the core software components and their most relevant relationships:
 
 ```mermaid
-%%{init: {
-  "theme": "base",
-  "themeVariables": {
-    "fontSize": "14px",
-    "lineColor": "#475569",
-    "primaryTextColor": "#0f172a"
-  }
-}}%%
 classDiagram
 direction TB
 
@@ -402,21 +392,6 @@ ServoController --> PCA9685Driver : PWM
 
 Joystick --> STM32Peripherals : ADC / GPIO
 PCA9685Driver --> STM32Peripherals : I2C
-
-classDef app   fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#1e3a8a;
-classDef lib   fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d;
-classDef model fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#78350f;
-classDef hw    fill:#ede9fe,stroke:#7c3aed,stroke-width:2px,color:#4c1d95;
-
-class MainApp:::app
-class RobotController:::app
-class Joystick:::lib
-class ServoController:::lib
-class Kinematics:::lib
-class JointAngles:::model
-class ServoLimits:::model
-class PCA9685Driver:::hw
-class STM32Peripherals:::hw
 ```
 
 The firmware follows a layered and modular software structure.  
