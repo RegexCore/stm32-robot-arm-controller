@@ -338,6 +338,90 @@ This dedicated hardware interface enables precise and ergonomic real-time contro
 
 ## Software Architecture
 
+The following class diagram shows the core software components and their most relevant relationships:
+
+```mermaid
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "fontfamily": "Segoe UI, Helvetica, Arial, sans-serif",
+    "primaryBorderColor": "#94a3b8",
+    "lineColor": "#64748b"
+  }
+}}%%
+classDiagram
+direction TB
+
+namespace Application {
+  class MainApp {
+    +main()
+  }
+  class RobotController {
+    +init()
+    +periodicUpdate()
+  }
+}
+
+namespace Libraries {
+  class Joystick {
+    +update()
+    +isEmergencyStop() bool
+    +isAutoModeOn() bool
+  }
+  class ServoController {
+    +init()
+    +moveAllToTargets()
+  }
+  class Kinematics {
+    +forward() Vec3
+    +inverse() IKResult
+  }
+}
+
+namespace Model {
+  class JointAngles
+  class ServoLimits
+}
+
+namespace Hardware {
+  class PCA9685Driver {
+    +setPWM()
+  }
+  class STM32Peripherals {
+    ADC / GPIO / I2C / USART
+  }
+}
+
+MainApp --> RobotController : creates & injects
+
+RobotController --> Joystick : reads input
+RobotController --> ServoController : motion commands
+RobotController --> Kinematics : FK / IK
+RobotController *-- JointAngles : arm state
+
+ServoController ..> Joystick : E-stop check
+ServoController *-- ServoLimits : limits
+ServoController --> PCA9685Driver : PWM
+
+Joystick --> STM32Peripherals : ADC / GPIO
+PCA9685Driver --> STM32Peripherals : I2C
+
+classDef app    fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#1e3a8a;
+classDef lib    fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d;
+classDef model  fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#78350f;
+classDef hw     fill:#f3e8ff,stroke:#9333ea,stroke-width:2px,color:#581c87;
+
+class MainApp:::app
+class RobotController:::app
+class Joystick:::lib
+class ServoController:::lib
+class Kinematics:::lib
+class JointAngles:::model
+class ServoLimits:::model
+class PCA9685Driver:::hw
+class STM32Peripherals:::hw
+```
+
 The firmware follows a layered and modular software structure.  
 The main idea behind the architecture is to separate concerns so that hardware access, application control logic, data handling and mathematical processing remain clearly distinguishable.
 
