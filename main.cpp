@@ -1,8 +1,4 @@
 /*********************************************************************
-*                    SEGGER Microcontroller GmbH                     *
-*                        The Embedded Experts                        *
-**********************************************************************
-
 File        : main.cpp
 Purpose     : Generic application start
 
