@@ -94,6 +94,10 @@
         </folder>
       </folder>
       <folder Name="libraries">
+        <folder Name="protocol">
+          <file file_name="libraries/protocol/motion_command.cpp" />
+          <file file_name="libraries/protocol/motion_command.hpp" />
+        </folder>
         <folder Name="diagnostic">
           <file file_name="libraries/diagnostic/logger.c" />
           <file file_name="libraries/diagnostic/logger.h" />

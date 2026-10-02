@@ -198,7 +198,7 @@ The firmware is designed for the following hardware components:
 - **Microcontroller Platform:** ST Nucleo-F446RE development board (STM32F446RE, ARM Cortex-M4)
 - **Robot Manipulator Platform:** Joy-IT multi-axis robotic arm kit with integrated hobby servo drives
 - **External PWM Servo Controller:** Adafruit PCA9685 16-Channel PWM Servo Shield (I²C interface)
-- **Wireless Debug Communication Module:** HC-05 Bluetooth serial transceiver connected to a UART interface of the microcontroller (TX debug output)
+- **Wireless Communication Module:** HC-05 Bluetooth serial transceiver connected to USART2 (TX diagnostics and RX motion commands)
 - **Manual Control Interface:** Custom dual-axis analog joystick robot control panel PCB
 - **Digital Input Devices:** Emergency stop push button, automatic mode selection switch and joystick push buttons located on the control panel
 - **Control Panel Interconnection Cable:** 
@@ -283,9 +283,11 @@ The push buttons are connected to:
 ### USART Interface
 
 - `PA2` → USART2 TX
-- `PA3` is not used in this application
+- `PA3` → USART2 RX
 
-The TX signal is connected to an HC-05 Bluetooth module for wireless output of debug messages.
+Connect PA2 to HC-05 RX, HC-05 TX to PA3, and share GND. Use 3.3 V-compatible
+UART logic. If the Nucleo virtual COM port also drives PA3, disconnect that
+TX connection before connecting the HC-05 TX; do not connect two outputs together.
 
 ### Control Panel
 
@@ -486,7 +488,7 @@ In this project, every module is focused on exactly one concern:
 | `hw_adc` | ADC peripheral initialisation and DMA-based value acquisition |
 | `hw_gpio` | GPIO pin configuration and digital input reading |
 | `hw_i2c` | Low-level I²C bus communication |
-| `hw_usart` | USART transmit initialisation and byte output |
+| `hw_usart` | USART TX output and interrupt-driven RX line queue |
 | `timer_interrupt` | Periodic control tick generation via TIM7 |
 | `pca9685` | PCA9685 PWM controller configuration and channel output |
 | `Joystick` | Acquisition and storage of the complete user input panel state |
@@ -694,22 +696,30 @@ The counter is typically defined as `volatile` to ensure correct access from bot
 
 ### USART
 
-The USART driver provides debug output over the STM32 USART2 peripheral.
+The USART driver provides debug output and receives motion commands over STM32 USART2.
 
 #### Main Characteristics
 
 * Uses `USART2`
-* TX only
+* TX and interrupt-driven RX
 * Baud rate: `9600`
 * Format: `8N1`
 * TX pin: `PA2`
+* RX pin: `PA3` (AF7, pull-up)
 
-The RX pin is not configured because the application does not require receiving data over USART.
+The RX interrupt assembles LF-terminated ASCII lines in a bounded FIFO.
+Parsing, inverse kinematics and motion execution run in the controller, never in the ISR.
+One received line is processed per controller cycle. Motion commands are retained
+in a separate bounded FIFO, while `@STATUS(#ID)` queries report position, angles,
+targets, mode, physical inputs and queue occupancy without waiting for motion completion.
+Manual mode accepts remote targets as well as joystick input: a remote movement has
+priority until it completes, then the next queued command runs; with no pending command,
+joystick control resumes. Automatic transport rejects remote motion commands but
+allows status queries; its existing sequence is advanced cyclically rather than blocking.
 
-The transmitted debug output is routed to an HC-05 Bluetooth module.
-This allows a paired external device, such as a PC or smartphone, to display log messages wirelessly in a serial terminal.
-
-This is particularly useful during development and testing, because it enables insight into the internal system state without requiring a wired debugging console.
+The HC-05 carries logs and protocol responses on the same serial connection.
+See the [remote command protocol](docs/user-manual.md#remote-target-commands-hc-05)
+for framing, responses, limits and host/MCP integration.
 
 ---
 

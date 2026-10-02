@@ -14,6 +14,8 @@
 #include "../libraries/diagnostic/logger.hpp"
 #include "../hardware/timer/systicktimer.h"
 #include "../config/robot_config.hpp"
+#include "../hardware/usart/hw_usart.h"
+#include <cmath>
 
 namespace robotarm 
 {
@@ -53,74 +55,255 @@ namespace robotarm
 
     void RobotController::periodicUpdate()
     {
+        bool togglePressed = m_joystick.isAutoModeOn();
+
+        if (togglePressed && !m_lastToggleState)
+        {
+            m_autoMode = !m_autoMode;
+            if (m_autoMoving)
+                servoPosition.targetAngles = servoPosition.currentAngles;
+            m_autoMoving = false;
+            m_autoStep = 0;
+        }
+
+        m_lastToggleState = togglePressed;
+        bool stopped = m_joystick.isEmergencyStop();
+        if (stopped)
+        {
+            if (m_autoMoving)
+                servoPosition.targetAngles = servoPosition.currentAngles;
+            m_autoMoving = false;
+            m_autoStep = 0;
+        }
+        m_joystick.update();
+        bool remoteAllowed = !m_autoMode && !togglePressed && !stopped;
+        HW_USART2_SetMotionAllowed(remoteAllowed);
+        const char* rejection = stopped ? "ESTOP" : (m_autoMode ? "AUTO_MODE" : "MODE_BUTTON");
+        if (processRemoteCommands(remoteAllowed, rejection) || stopped)
+            return;
+
 #ifdef DEBUG
         writeLogData();
 #endif
-        static bool autoMode = false;
-        static bool lastToggleState = false;
-        bool togglePressed = m_joystick.isAutoModeOn();
-
-        if (togglePressed && !lastToggleState)
-        {
-            autoMode = !autoMode;
-        }
-
-        lastToggleState = togglePressed;
 
         if (!togglePressed)
         {
-            if (!autoMode)
+            if (!m_autoMode)
             {
-                m_joystick.update();
                 updateServoTargetsFromJoystick();
             }
             else
             {
-                //servoPosition.targetAngles = {120, 60, 160, 60, 60, 80};
-                //m_servo.moveAllToTargets(servoPosition, 1, 60);
-                //servoPosition.targetAngles = {120, 60, 160, 60, 110, 41};
-                //m_servo.moveAllToTargets(servoPosition, 1, 60);
-                //servoPosition.targetAngles = {120, 60, 160, 60, 110, 80};
-                //m_servo.moveAllToTargets(servoPosition, 1, 60);
-                //servoPosition.targetAngles = {90, 40, 140, 90, 80, 60};
-                //m_servo.moveAllToTargets(servoPosition, 1, 30);
-
-                int position1X = 80;
-                int position1Y = 70;
-                int position1Z = 50;
-
-                int position2X = 100;
-                int position2Y = 0;
-                int position2Z = 100;
-
-                int position3X = 80;
-                int position3Y = -70;
-                int position3Z = 50;
-
-#if defined(ROBOT_VARIANT_A)
-                setGripperAngle(80);
-                performObjectTransport(position1X, position1Y, position1Z, 60, 80);
-                setGripperAngle(40);
-
-                performObjectTransport(position2X, position2Y, position2Z, 110, 80);
-
-                performObjectTransport(position3X, position3Y, position3Z, 60, 80);
-                setGripperAngle(80);
-
-                performObjectTransport(position2X, position2Y, position2Z, 110, 80);
-#elif defined(ROBOT_VARIANT_B)
-                setGripperAngle(50);
-                performObjectTransport(position1X, position1Y, position1Z, 75, 80);
-                setGripperAngle(125);
-
-                performObjectTransport(position2X, position2Y, position2Z, 100, 80);
-
-                performObjectTransport(position3X, position3Y, position3Z, 75, 80);
-                setGripperAngle(50);
-
-                performObjectTransport(position2X, position2Y, position2Z, 110, 80);
-#endif
+                updateAutomaticTransport();
             }
+        }
+    }
+
+    void RobotController::receiveCommand(bool allowed, const char* rejection)
+    {
+        using diagnostic::Logger;
+        uint32_t overflow = HW_USART2_TakeRxOverflowCount();
+        if (overflow != 0)
+            Logger::printf("@ERR(#0) code=RX_QUEUE_FULL count=%lu\n", (unsigned long)overflow);
+
+        HW_USART2_RxLine line;
+        if (!HW_USART2_ReadLine(&line))
+            return;
+
+        if (line.status != HW_USART2_RX_OK)
+        {
+            const char* error = "UART_ERROR";
+            if (line.status == HW_USART2_RX_TOO_LONG)
+                error = "LINE_TOO_LONG";
+            else if (line.status == HW_USART2_RX_INVALID_BYTE)
+                error = "INVALID_BYTE";
+            Logger::printf("@ERR(#0) code=%s\n", error);
+            return;
+        }
+
+        int statusId;
+        if (parseStatusCommand(line.text, statusId))
+        {
+            writeStatus(statusId);
+            return;
+        }
+
+        MotionCommand command;
+        if (!parseMotionCommand(line.text, command))
+        {
+            Logger::printf("@ERR(#0) code=INVALID_COMMAND\n");
+            return;
+        }
+        if (!allowed || !line.motion_allowed)
+        {
+            Logger::printf("@ERR(#%d) code=%s\n", command.id, allowed ? "RX_DISABLED" : rejection);
+            return;
+        }
+        if (m_motionCount == MotionQueueCapacity)
+        {
+            Logger::printf("@ERR(#%d) code=MOTION_QUEUE_FULL\n", command.id);
+            return;
+        }
+
+        m_motionQueue[(m_motionHead + m_motionCount) % MotionQueueCapacity] = command;
+        ++m_motionCount;
+        Logger::printf("@QUEUED(#%d)\n", command.id);
+    }
+
+    void RobotController::abortRemoteCommands(const char* reason)
+    {
+        if (m_remoteActive)
+        {
+            servoPosition.targetAngles = servoPosition.currentAngles;
+            m_remoteActive = false;
+            diagnostic::Logger::printf("@ERR(#%d) code=%s\n", m_remoteId, reason);
+        }
+        while (m_motionCount != 0)
+        {
+            int id = m_motionQueue[m_motionHead].id;
+            m_motionHead = (m_motionHead + 1U) % MotionQueueCapacity;
+            --m_motionCount;
+            diagnostic::Logger::printf("@ERR(#%d) code=%s\n", id, reason);
+        }
+    }
+
+    bool RobotController::processRemoteCommands(bool allowed, const char* rejection)
+    {
+        using diagnostic::Logger;
+        if (!allowed)
+            abortRemoteCommands(rejection);
+
+        receiveCommand(allowed, rejection);
+        if (!allowed)
+            return false;
+
+        if (m_remoteActive)
+        {
+            uint32_t now = systick_millis();
+            if ((int32_t)(now - m_nextRemoteStep) >= 0)
+            {
+                auto status = m_servo.stepToTargets(servoPosition, 1);
+                m_nextRemoteStep = now + 60;
+                if (status == ServoController::MoveStatus::Complete)
+                {
+                    m_remoteActive = false;
+                    Logger::printf("@DONE(#%d)\n", m_remoteId);
+                }
+                else if (status == ServoController::MoveStatus::Stopped)
+                {
+                    HW_USART2_SetMotionAllowed(0);
+                    abortRemoteCommands("ESTOP");
+                }
+            }
+            return true;
+        }
+
+        if (m_motionCount == 0)
+            return false;
+
+        const MotionCommand command = m_motionQueue[m_motionHead];
+        m_motionHead = (m_motionHead + 1U) % MotionQueueCapacity;
+        --m_motionCount;
+        IKResult result = m_kinematics.inverse(command.x, command.y, command.z, true);
+        float angles[] = {
+            result.q0, result.q1, result.q2,
+            static_cast<float>(command.tilt.value_or(servoPosition.currentAngles[Motor3])),
+            static_cast<float>(command.rotation.value_or(servoPosition.currentAngles[Motor4])),
+            static_cast<float>(command.gripper.value_or(servoPosition.currentAngles[Motor5]))
+        };
+        const char* error = result.valid ? nullptr : "UNREACHABLE";
+        for (unsigned int motor = 0; motor < ServoID::Count && !error; ++motor)
+        {
+            const auto& limits = m_servo.servoLimits[motor];
+            if (!std::isfinite(angles[motor]) ||
+                angles[motor] < limits.limitMinAngle || angles[motor] > limits.limitMaxAngle)
+                error = "SERVO_LIMIT";
+        }
+        if (error)
+        {
+            Logger::printf("@ERR(#%d) code=%s\n", command.id, error);
+            return true;
+        }
+
+        for (unsigned int motor = 0; motor < ServoID::Count; ++motor)
+            servoPosition.targetAngles[motor] = (int)angles[motor];
+        m_remoteId = command.id;
+        m_remoteActive = true;
+        m_nextRemoteStep = systick_millis();
+        Logger::printf("@ACK(#%d)\n", command.id);
+        return true;
+    }
+
+    void RobotController::writeStatus(int id)
+    {
+        using diagnostic::Logger;
+        const auto& current = servoPosition.currentAngles;
+        const auto& target = servoPosition.targetAngles;
+        const Vec3 position = m_kinematics.forward(current[Motor0], current[Motor1], current[Motor2]);
+        const Vec3 targetPosition = m_kinematics.forward(target[Motor0], target[Motor1], target[Motor2]);
+        const bool stopped = m_joystick.isEmergencyStop();
+        const uint32_t rxCount = HW_USART2_GetRxQueueCount();
+        const uint32_t time = systick_millis();
+        Logger::printf("@STATUS(#%d) mode=%s estop=%d mode_button=%d busy=%d active=%d auto_step=%d\n",
+            id, m_autoMode ? "AUTO" : "MANUAL", stopped, m_lastToggleState,
+            m_remoteActive || m_autoMoving, m_remoteActive ? m_remoteId : 0,
+            m_autoMode ? (int)m_autoStep : -1);
+        Logger::printf("@POSITION(#%d) x=%d y=%d z=%d tx=%d ty=%d tz=%d\n", id,
+            (int)position.x, (int)position.y, (int)position.z,
+            (int)targetPosition.x, (int)targetPosition.y, (int)targetPosition.z);
+        Logger::printf("@ANGLES(#%d) m0=%d m1=%d m2=%d tilt=%d rotation=%d gripper=%d\n", id,
+            current[Motor0], current[Motor1], current[Motor2], current[Motor3], current[Motor4], current[Motor5]);
+        Logger::printf("@TARGETS(#%d) m0=%d m1=%d m2=%d tilt=%d rotation=%d gripper=%d\n", id,
+            target[Motor0], target[Motor1], target[Motor2], target[Motor3], target[Motor4], target[Motor5]);
+        const auto& left = m_joystick.joysticks[0];
+        const auto& right = m_joystick.joysticks[1];
+        Logger::printf("@INPUTS(#%d) lx=%d ly=%d lb=%d rx=%d ry=%d rb=%d buttons=%s\n", id,
+            left.x, left.y, left.button, right.x, right.y, right.button,
+            m_controlGripper ? "GRIPPER" : "ROTATION");
+        Logger::printf("@QUEUE(#%d) motion=%u motion_cap=%u rx=%lu rx_cap=%u uptime_ms=%lu\n", id,
+            m_motionCount, MotionQueueCapacity, (unsigned long)rxCount,
+            HW_USART2_RX_QUEUE_DEPTH, (unsigned long)time);
+        Logger::printf("@STATUS_END(#%d)\n", id);
+    }
+
+    void RobotController::updateAutomaticTransport()
+    {
+        if (!m_autoMoving)
+        {
+#if defined(ROBOT_VARIANT_B) && !defined(ROBOT_VARIANT_A)
+            constexpr int open = 50, closed = 125, tilt = 75, transitTilt = 100;
+#else
+            constexpr int open = 80, closed = 40, tilt = 60, transitTilt = 110;
+#endif
+            switch (m_autoStep)
+            {
+                case 0: setGripperAngle(open); break;
+                case 1: performObjectTransport(80, 70, 50, tilt, 80); break;
+                case 2: setGripperAngle(closed); break;
+                case 3: performObjectTransport(100, 0, 100, transitTilt, 80); break;
+                case 4: performObjectTransport(80, -70, 50, tilt, 80); break;
+                case 5: setGripperAngle(open); break;
+                case 6: performObjectTransport(100, 0, 100, 110, 80); break;
+            }
+            m_autoMoving = true;
+            m_nextAutoStep = systick_millis();
+        }
+        const uint32_t now = systick_millis();
+        if ((int32_t)(now - m_nextAutoStep) < 0)
+            return;
+
+        const auto status = m_servo.stepToTargets(servoPosition, 1);
+        m_nextAutoStep = now + 60;
+        if (status == ServoController::MoveStatus::Complete)
+        {
+            m_autoMoving = false;
+            m_autoStep = (m_autoStep + 1U) % 7U;
+        }
+        else if (status == ServoController::MoveStatus::Stopped)
+        {
+            m_autoMoving = false;
+            m_autoStep = 0;
+            diagnostic::Logger::printf("[Auto] Movement stopped by emergency stop\n");
         }
     }
 
@@ -206,17 +389,15 @@ namespace robotarm
         servoPosition.targetAngles[Motor0] = (int)result.q0;  // M0
         servoPosition.targetAngles[Motor1] = (int)result.q1;  // M1
         servoPosition.targetAngles[Motor2] = (int)result.q2;  // M2
-        servoPosition.targetAngles[Motor3] = m3;              // M3 (wrist rotation)
-        servoPosition.targetAngles[Motor4] = m4;              // M4 (wrist tilt)
+        servoPosition.targetAngles[Motor3] = m3;              // M3 (tool tilt)
+        servoPosition.targetAngles[Motor4] = m4;              // M4 (wrist rotation)
         // servoPosition.targetAngles[5] remains unchanged (gripper M5)
 
-        m_servo.moveAllToTargets(servoPosition, 1, 60);
     }
 
     void RobotController::setGripperAngle(int angle)
     {
         servoPosition.targetAngles[5] = angle;
-        m_servo.moveAllToTargets(servoPosition, 1, 60);
     }
 
     // Clamps an angle to the valid servo range
@@ -310,24 +491,21 @@ namespace robotarm
         }
         
         // --- Gripper logic ---
-        static bool gripper = true;
-        static bool lastToggleState = false;   // Stores whether both buttons were pressed previously
-
         bool togglePressed = (right.button && left.button);
 
         // Toggle only on transition: previously NOT pressed -> now pressed
-        if (togglePressed && !lastToggleState)
+        if (togglePressed && !m_lastGripperToggleState)
         {
-            gripper = !gripper;
+            m_controlGripper = !m_controlGripper;
         }
 
         // Store state
-        lastToggleState = togglePressed;
+        m_lastGripperToggleState = togglePressed;
 
         // If both are pressed -> only toggle, NO movement
         if (!togglePressed)
         {
-            if (!gripper)
+            if (!m_controlGripper)
             {
                 // Mode 1: Buttons control servo 4
                 if (right.button)

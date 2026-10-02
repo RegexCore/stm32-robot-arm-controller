@@ -22,12 +22,14 @@ namespace robotarm
         ServoController(Joystick& js);
   
         void init(model::JointAngles& servoPosition);
+        enum class MoveStatus { Moving, Complete, Stopped };
+        MoveStatus stepToTargets(model::JointAngles& servoPosition, int stepDeg);
         void moveAllToTargets(model::JointAngles& servoPosition,
                               int stepDeg,
                               int stepDelayMs);
         const model::ServoLimits servoLimits[model::ServoID::Count];
     private:
-        void moveToPosition(uint8_t motorNumber, int angle);
+        bool moveToPosition(uint8_t motorNumber, int angle);
         int angleToPulse(float angleDeg, const model::ServoLimits& servoLimit);
         Joystick& m_joystick;
     };

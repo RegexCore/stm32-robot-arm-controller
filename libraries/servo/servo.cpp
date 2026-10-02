@@ -54,57 +54,68 @@ namespace robotarm
         if (stepDeg < 1)      stepDeg = 1;
         if (stepDelayMs < 1)  stepDelayMs = 1;
 
-        while (true)
+        while (stepToTargets(servoPosition, stepDeg) == MoveStatus::Moving)
         {
-            bool anyMoving = false;
-
-            for (uint8_t motor = 0; motor < ServoID::Count; ++motor)
-            {
-                int current = servoPosition.currentAngles[motor];
-                int target  = servoPosition.targetAngles[motor];
-
-                if (target < servoLimits[motor].limitMinAngle)
-                    target = servoLimits[motor].limitMinAngle;
-
-                if (target > servoLimits[motor].limitMaxAngle)
-                    target = servoLimits[motor].limitMaxAngle;
-
-                int diff = target - current;
-
-                if (diff == 0)
-                    continue; // This motor is already at its target position
-
-                anyMoving = true;
-
-                int step;
-
-                if (diff > 0)
-                    step = (diff > stepDeg) ? stepDeg : diff;
-                else
-                    step = (diff < -stepDeg) ? -stepDeg : diff;
-
-                current += step;
-                servoPosition.currentAngles[motor] = current;
-
-                moveToPosition(motor, current);
-            }
-
-            if (!anyMoving)
-                break;
-
             delay_ms(stepDelayMs);
         }
     }
 
-    void ServoController::moveToPosition(uint8_t motorNumber, int angle)
+    ServoController::MoveStatus ServoController::stepToTargets(model::JointAngles& servoPosition,
+                                                               int stepDeg)
+    {
+        if (stepDeg < 1)
+            stepDeg = 1;
+        bool anyMoving = false;
+        for (uint8_t motor = 0; motor < ServoID::Count; ++motor)
+        {
+            if (m_joystick.isEmergencyStop())
+            {
+                servoPosition.targetAngles = servoPosition.currentAngles;
+                return MoveStatus::Stopped;
+            }
+            int current = servoPosition.currentAngles[motor];
+            int target  = servoPosition.targetAngles[motor];
+
+            if (target < servoLimits[motor].limitMinAngle)
+                target = servoLimits[motor].limitMinAngle;
+
+            if (target > servoLimits[motor].limitMaxAngle)
+                target = servoLimits[motor].limitMaxAngle;
+
+            int diff = target - current;
+
+            if (diff == 0)
+                continue;
+
+            int step;
+
+            if (diff > 0)
+                step = (diff > stepDeg) ? stepDeg : diff;
+            else
+                step = (diff < -stepDeg) ? -stepDeg : diff;
+
+            current += step;
+            if (!moveToPosition(motor, current))
+            {
+                servoPosition.targetAngles = servoPosition.currentAngles;
+                return MoveStatus::Stopped;
+            }
+            servoPosition.currentAngles[motor] = current;
+            anyMoving = true;
+        }
+        return anyMoving ? MoveStatus::Moving : MoveStatus::Complete;
+    }
+
+    bool ServoController::moveToPosition(uint8_t motorNumber, int angle)
     {
         if (m_joystick.isEmergencyStop())
         {
-            return;
+            return false;
         }
 
         int i = angleToPulse(angle, servoLimits[motorNumber]);
         PCA9685_SetServoUS(PCA9685_DEFAULT_ADDR, motorNumber, i);
+        return true;
     }
 
     int ServoController::angleToPulse(float angleDeg, const model::ServoLimits& servoLimit)
