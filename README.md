@@ -1232,6 +1232,9 @@ This combines efficiency and direct hardware control with structured object-orie
 
 This repository contains embedded firmware code intended for an STM32-based target system.
 
+For the incremental Windows setup guide using VS Code with the existing SEGGER
+toolchain and J-Link, see [VS Code setup](docs/vscode-setup.md).
+
 To build and run the project successfully, the following are typically required:
 
 * a compatible ARM embedded toolchain,

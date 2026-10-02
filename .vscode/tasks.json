@@ -1,0 +1,64 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "SEGGER: Build Debug",
+            "type": "process",
+            "command": "C:\\Program Files\\SEGGER\\SEGGER Embedded Studio 8.30a\\bin\\emBuild.exe",
+            "args": [
+                "-config",
+                "Debug",
+                "-project",
+                "Robotarm",
+                "${workspaceFolder}\\Robotarm.emProject"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            }
+        },
+        {
+            "label": "SEGGER: Build, Flash & Start Debug",
+            "type": "process",
+            "command": "C:\\Program Files\\SEGGER\\JLink_V982\\JLink.exe",
+            "args": [
+                "-USB",
+                "776625679",
+                "-Device",
+                "STM32F446RE",
+                "-If",
+                "SWD",
+                "-Speed",
+                "1000",
+                "-AutoConnect",
+                "1",
+                "-ExitOnError",
+                "1",
+                "-NoGui",
+                "1",
+                "-CommandFile",
+                "${workspaceFolder}\\scripts\\flash-debug.jlink"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "dependsOn": "SEGGER: Build Debug",
+            "dependsOrder": "sequence",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            }
+        }
+    ]
+}

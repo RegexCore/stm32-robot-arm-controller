@@ -1,0 +1,6 @@
+r
+h
+loadfile "Output\Debug\Exe\Robotarm.elf"
+r
+g
+exit
