@@ -1,0 +1,13 @@
+{
+    "mcpServers": {
+        "stm32-robot": {
+            "type": "http",
+            "url": "http://127.0.0.1:5078/mcp",
+            "headers": {
+                "Authorization": "Bearer ${STM32_ROBOT_MCP_TOKEN}"
+            },
+            "tools": ["*"],
+            "timeout": 150000
+        }
+    }
+}
