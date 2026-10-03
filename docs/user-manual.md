@@ -350,12 +350,22 @@ Do not poll continuously or assume a hard 10 ms response/motion deadline.
 
 #### API / MCP Host Integration
 
-The MCU does not speak HTTP or MCP. An external API/MCP server must open the paired
-HC-05 serial port, serialize requests into the command format above, and read responses
-by ID. Existing `@IK(#99)` output remains telemetry and is **not** accepted as an RX
-command. Ignore ordinary debug text when parsing protocol responses. This repository
-implements the firmware endpoint, not an external MCP server or authentication layer.
-Only allow trusted clients to access the serial connection.
+The MCU does not speak HTTP or MCP. MCP (Model Context Protocol) is a host-side
+integration option: an MCP-compatible client can ask a separate server to expose
+robot operations as tools, and that server can translate requests into the serial
+command format above and return the corresponding responses. This lets a host
+application or assistant use the existing robot interface without implementing MCP
+in the firmware; it does not make the robot itself an MCP or network endpoint.
+
+The host server must open the paired HC-05 serial port, serialize requests into the
+command format above, and read responses by ID. Existing `@IK(#99)` output remains
+telemetry and is **not** accepted as an RX command. Ignore ordinary debug text when
+parsing protocol responses. This repository implements the firmware endpoint and
+contains MCP client connection configuration, but does not include the external MCP
+server or provide an authentication layer for serial commands. Only allow trusted
+clients to access the serial connection. The MCP authorization value is supplied
+from the local environment; never put the secret itself in a public configuration
+file or documentation.
 
 <div align="center">
 
@@ -394,7 +404,9 @@ The system includes an emergency stop function.
 
 When activated:
 
-- All robot motion stops immediately  
+- Further servo PWM updates are inhibited after the controller detects the stop input.
+- Servo power is not disconnected, so the arm may still move due to inertia, gravity or load.
+- Blocking UART output can delay the controller's next input check; this is not a safety-rated emergency stop.
 
 Before restarting operation:
 

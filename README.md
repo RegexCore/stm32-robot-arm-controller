@@ -15,7 +15,7 @@ The project combines low-level hardware access in C with higher-level control lo
 
 ## Engineering Highlights
 
-- Deterministic 100 Hz control loop using timer interrupt scheduling
+- Nominal 100 Hz control loop scheduled by timer interrupts; blocking UART output can delay cycles
 - Continuous ADC acquisition via DMA
 - Hybrid C / C++ architecture with clear module separation
 - Forward and inverse kinematics
@@ -181,7 +181,7 @@ The software was designed with the following objectives in mind:
 - Emergency stop functionality
 - Modular hardware abstraction for STM32 peripherals
 - Continuous ADC acquisition using DMA
-- Debug logging via USART and Bluetooth
+- Bidirectional HC-05 serial interface for remote motion commands and robot status queries
 - Clean separation between C-based drivers and C++ application logic
 
 ---
@@ -198,7 +198,7 @@ The firmware is designed for the following hardware components:
 - **Microcontroller Platform:** ST Nucleo-F446RE development board (STM32F446RE, ARM Cortex-M4)
 - **Robot Manipulator Platform:** Joy-IT multi-axis robotic arm kit with integrated hobby servo drives
 - **External PWM Servo Controller:** Adafruit PCA9685 16-Channel PWM Servo Shield (I²C interface)
-- **Wireless Communication Module:** HC-05 Bluetooth serial transceiver connected to USART2 (TX diagnostics and RX motion commands)
+- **Wireless Communication Module:** HC-05 Bluetooth serial transceiver connected to USART2 (TX diagnostics and RX motion commands and status queries)
 - **Manual Control Interface:** Custom dual-axis analog joystick robot control panel PCB
 - **Digital Input Devices:** Emergency stop push button, automatic mode selection switch and joystick push buttons located on the control panel
 - **Control Panel Interconnection Cable:** 
@@ -520,10 +520,20 @@ Together, these principles improve:
 
 ## Project Structure
 
+The tree below highlights the firmware modules and the repository files used to
+configure the development environment. The MCP configuration and J-Link helper
+files support host-side development; they are not part of the STM32 firmware.
+
 ```text
 .
+├── .mcp.json
+├── .vscode/
+│   └── tasks.json
 ├── config/
 ├── controller/
+├── docs/
+│   ├── user-manual.md
+│   └── vscode-setup.md
 ├── hardware/
 │   ├── adc/
 │   ├── gpio/
@@ -535,10 +545,18 @@ Together, these principles improve:
 │   ├── joystick/
 │   ├── kinematics/
 │   ├── pca9685/
+│   ├── protocol/
 │   └── servo/
+├── scripts/
+│   └── flash-debug.jlink
 ├── model/
 └── main.cpp
-````
+```
+
+`libraries/protocol/` parses remote motion commands received over USART2.
+The `.mcp.json` file configures the VS Code MCP client connection; it does not
+contain the MCP server implementation. `scripts/flash-debug.jlink` provides
+J-Link Commander instructions used by the VS Code flash task.
 
 ---
 
@@ -696,7 +714,8 @@ The counter is typically defined as `volatile` to ensure correct access from bot
 
 ### USART
 
-The USART driver provides debug output and receives motion commands over STM32 USART2.
+The USART driver provides debug output and receives remote motion commands and status
+queries over STM32 USART2.
 
 #### Main Characteristics
 
@@ -719,7 +738,11 @@ allows status queries; its existing sequence is advanced cyclically rather than 
 
 The HC-05 carries logs and protocol responses on the same serial connection.
 See the [remote command protocol](docs/user-manual.md#remote-target-commands-hc-05)
-for framing, responses, limits and host/MCP integration.
+for framing, responses, limits and host/MCP integration. MCP is a host-side
+integration layer: an MCP-compatible client can use a separate server to bridge
+higher-level requests to this serial protocol. The repository's `.mcp.json`
+configures a connection to a local MCP endpoint; it does not implement that
+server or add MCP or network support to the STM32 firmware.
 
 ---
 
@@ -1266,7 +1289,7 @@ Potential future extensions of the project include:
 * trajectory planning instead of simple point-to-point movement,
 * acceleration and deceleration profiles for smoother motion,
 * closed-loop feedback using sensors,
-* serial command interface for PC-based control,
+* MCP/API host-server implementation for the documented serial command protocol (the repository currently provides client connection configuration only),
 * teach-in positions and programmable motion sequences,
 * calibration mode for servo offsets,
 * non-volatile storage of robot parameters,
