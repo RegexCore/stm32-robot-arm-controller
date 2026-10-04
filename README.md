@@ -95,6 +95,14 @@ This project was developed as part of personal advanced training in embedded C /
   - [Control Concept](#control-concept)
   - [Manual Mode](#manual-mode)
   - [Automatic Mode](#automatic-mode)
+  - [AI + MCP Host Bridge (HC-05)](#ai--mcp-host-bridge-hc-05)
+    - [How It Works (Short)](#how-it-works-short)
+    - [What Is in This Repository?](#what-is-in-this-repository)
+    - [Control Flow (AI → Robot)](#control-flow-ai--robot)
+    - [Host Application](#host-application)
+    - [From AI Request to Robot Movement](#from-ai-request-to-robot-movement)
+    - [Getting Connected](#getting-connected)
+    - [Protocol Reference](#protocol-reference)
   - [User Manual](#user-manual)
   - [Kinematics Concept](#kinematics-concept)
     - [Current Kinematic Model Limitations](#current-kinematic-model-limitations)
@@ -1063,6 +1071,134 @@ The sequence is conceptually as follows:
 This allows the robotic arm to move between known spatial points in a controlled and repeatable manner.
 
 Automatic mode is especially useful for tasks such as point-to-point transport or pick-and-place style motion.
+
+---
+
+## AI + MCP Host Bridge (HC-05)
+
+This project can be used as a strong **AI-assisted robot control setup**:
+MCP-compatible AI clients can request robot status and movements through a
+host-side bridge, while the STM32 firmware executes the validated motion commands
+over the existing HC-05 / USART2 serial interface.
+
+In practice, this creates a clean separation of roles:
+- **AI agent / MCP client:** plans and issues high-level tool calls (for example status checks and motion requests).
+- **Host MCP server (PC):** translates MCP tool calls into serial protocol commands, sends them through the HC-05 Bluetooth serial bridge, and maps firmware responses back.
+- **STM32 firmware:** validates targets, enforces limits and operating rules, and drives the robot motion.
+
+This makes AI integration practical without changing the embedded control core:
+the proven serial command endpoint remains the runtime interface, and MCP adds an
+interoperable layer on top for AI tools and agent workflows.
+
+The **STM32 firmware does not include an MCP server**; MCP is a host-side
+extension running on the PC that communicates with the firmware through HC-05 and
+exposes robot tools to MCP-compatible AI agents, allowing them to connect and
+control the robot through the serial bridge.
+
+For the concrete serial protocol used by that bridge, see
+[Remote Target Commands (HC-05)](docs/user-manual.md#remote-target-commands-hc-05)
+and [API / MCP Host Integration](docs/user-manual.md#api--mcp-host-integration).
+
+### How It Works (Short)
+
+1. An MCP-compatible AI client calls a robot tool on the host MCP server.
+2. The host server converts this call into a serial command line and sends it via
+   the paired HC-05 COM port.
+3. The STM32 firmware parses and validates the command, then executes or rejects it.
+4. Firmware responses (`QUEUED`, `ACK`, `DONE`, `ERR`, `STATUS`) return over the
+   same serial path to the host, which maps them back to the AI client.
+
+### What Is in This Repository?
+
+Included in this repository:
+- STM32 firmware with the HC-05 / USART2 command endpoint.
+- Command protocol implementation and validation logic.
+- MCP client connection configuration (for local development setup).
+
+Not included in this repository:
+- The external host application shown in the screenshot.
+- The external MCP server implementation that bridges MCP to serial commands.
+
+### Control Flow (AI → Robot)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant AI as AI client (MCP)
+    participant HOST as Host app (local MCP server)
+    participant HC05 as HC-05 (Bluetooth serial)
+    participant MCU as STM32 firmware
+    participant ARM as PCA9685 + servos
+
+    AI->>HOST: Tool call (move/status)
+    HOST->>HC05: Serial command via COM port
+    HC05->>MCU: USART2 command (9600 8N1)
+    MCU->>ARM: Validate + execute motion
+    ARM-->>MCU: Servo command progression
+    MCU-->>HC05: QUEUED / ACK / DONE / ERR / STATUS
+    HC05-->>HOST: Serial responses
+    HOST-->>AI: Structured MCP result
+```
+
+Forward path: AI client → MCP host server → HC-05 serial link → STM32 firmware.  
+Return path: firmware responses → HC-05 → host server → AI client.
+
+The HC-05 transports serial protocol data; MCP remains on the host side.
+
+### Host Application
+
+The screenshot shows the separate WinUI 3 host tool's **AI & MCP** page:
+serial connection, local MCP endpoint and session movement permission.
+This host tool was self-developed in WinUI 3 for internal test and validation
+purposes (MCP client/server communication and agent coupling) and is not part of
+this firmware repository.
+
+<p align="center">
+  <img src="docs/images/mcp-ai-control-ui.png" alt="WinUI 3 host application showing the HC-05 COM connection, local MCP endpoint and AI movement permission" width="900"><br>
+  <em>Figure: Host-side AI &amp; MCP control panel (test tool). Any MCP-compatible AI client connected to this host endpoint can control the robot through the serial bridge.</em>
+</p>
+
+> **Note:** This screenshot shows a self-developed WinUI 3 internal test tool. The tool is not publicly released and is used only for internal testing purposes.
+
+### From AI Request to Robot Movement
+
+| Operation | What the host exposes to the assistant | What the firmware does |
+|---|---|---|
+| Read status | Robot mode, calculated position, servo angles and queue state | Returns a structured status snapshot |
+| Request movement | Cartesian X/Y/Z target with optional tilt, rotation and gripper angles | Validates the target and executes interpolated motion in manual mode |
+
+1. **Request:** The assistant invokes a robot tool through its MCP client.
+2. **Translate:** The host server converts the tool arguments into a serial command.
+3. **Execute:** The STM32 checks the command, operating mode and configured limits,
+   then queues an accepted movement for execution.
+4. **Report:** The server matches responses by command ID and returns the result.
+   For movement sequences, it should wait for `DONE` or `ERR` before sending the next movement.
+
+> **Physical safety:** AI-triggered motion still requires a clear workspace and
+> access to the robot's physical emergency stop. Disconnecting the host application
+> is not an emergency stop. Reported positions are software-calculated, not encoder
+> measurements; `DONE` confirms issued servo commands, not verified physical arrival.
+> The firmware does not perform collision or path validation.
+
+### Getting Connected
+
+1. **Pair the HC-05** with the PC and identify its serial COM port.
+2. **Connect the host application** to that port using `9600` baud, `8N1`.
+3. **Connect the MCP client** to the host application's local endpoint using its
+   authentication token. Keep the token private and grant access only to trusted clients.
+4. **Read status first.** Before requesting motion, check the robot's mode and stop
+   state, confirm the workspace is clear and review the host's movement permission.
+   Remote movements require manual mode.
+
+### Protocol Reference
+
+This section explains the integration; the **User Manual remains the complete
+command reference**, avoiding duplicate protocol documentation:
+
+- **[Remote Target Commands (HC-05)](docs/user-manual.md#remote-target-commands-hc-05):**
+  command syntax, parameters, limits, status queries, queue behaviour and responses.
+- **[API / MCP Host Integration](docs/user-manual.md#api--mcp-host-integration):**
+  serial parsing, response correlation and host integration requirements.
 
 ---
 
