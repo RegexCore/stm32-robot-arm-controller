@@ -1161,6 +1161,16 @@ this firmware repository.
 
 > **Note:** This screenshot shows a self-developed WinUI 3 internal test tool. The tool is not publicly released and is used only for internal testing purposes.
 
+The following VS Code screenshot shows an example MCP test in which a Copilot
+agent uses the robot tools to read the robot status and issue a movement
+request. The movement result reports that the firmware issued the commanded PWM
+positions; physical position and collision-free motion are not verified.
+
+<p align="center">
+  <img src="docs/images/vscode-copilot-mcp-test.png" alt="VS Code Copilot agent reading the robot status and issuing an MCP movement request" width="500"><br>
+  <em>Figure: Robot status query and movement request through the MCP tools in VS Code Copilot.</em>
+</p>
+
 ### From AI Request to Robot Movement
 
 | Operation | What the host exposes to the assistant | What the firmware does |
