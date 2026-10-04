@@ -1117,8 +1117,8 @@ Included in this repository:
 - MCP client connection configuration (for local development setup).
 
 Not included in this repository:
-- The external host application shown in the screenshot.
-- The external MCP server implementation that bridges MCP to serial commands.
+- The external host application shown in the screenshot and its MCP server
+  implementation, which bridges MCP to serial commands.
 
 ### Control Flow (AI → Robot)
 
