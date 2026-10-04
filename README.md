@@ -21,7 +21,7 @@ The project combines low-level hardware access in C with higher-level control lo
 - Forward and inverse kinematics
 - Smooth servo interpolation
 - Emergency stop safety concept
-- AI-assisted robot control via an external MCP host bridge and HC-05 serial interface
+- AI-assisted robot control via an external MCP host bridge and HC-05 serial interface (see [AI + MCP Host Bridge](#ai--mcp-host-bridge-hc-05))
 
 The software is designed with a modular architecture to ensure a clear separation between hardware abstraction, motion control, mathematical modelling, configuration data and shared data structures. This improves readability, maintainability and extensibility of the codebase.
 
