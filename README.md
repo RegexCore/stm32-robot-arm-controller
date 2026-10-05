@@ -1436,7 +1436,6 @@ Potential future extensions of the project include:
 * trajectory planning instead of simple point-to-point movement,
 * acceleration and deceleration profiles for smoother motion,
 * closed-loop feedback using sensors,
-* MCP/API host-server implementation for the documented serial command protocol (the repository currently provides client connection configuration only),
 * teach-in positions and programmable motion sequences,
 * calibration mode for servo offsets,
 * non-volatile storage of robot parameters,
