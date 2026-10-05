@@ -21,7 +21,7 @@ The project combines low-level hardware access in C with higher-level control lo
 - Forward and inverse kinematics
 - Smooth servo interpolation
 - Emergency stop safety concept
-- AI-assisted robot control via an external MCP host bridge and HC-05 serial interface (see [AI + MCP Host Bridge](#ai--mcp-host-bridge-hc-05))
+- AI-assisted robot control via an external MCP host bridge and HC-05 Bluetooth module (see [AI + MCP Host Bridge](#ai--mcp-host-bridge-hc-05))
 
 The software is designed with a modular architecture to ensure a clear separation between hardware abstraction, motion control, mathematical modelling, configuration data and shared data structures. This improves readability, maintainability and extensibility of the codebase.
 
@@ -190,7 +190,7 @@ The software was designed with the following objectives in mind:
 - Emergency stop functionality
 - Modular hardware abstraction for STM32 peripherals
 - Continuous ADC acquisition using DMA
-- Bidirectional HC-05 serial interface for remote motion commands and robot status queries
+- Bidirectional serial interface via the HC-05 Bluetooth module for remote motion commands and robot status queries
 - Clean separation between C-based drivers and C++ application logic
 
 ---
@@ -1080,7 +1080,7 @@ Automatic mode is especially useful for tasks such as point-to-point transport o
 This project can be used as a strong **AI-assisted robot control setup**:
 MCP-compatible AI clients can request robot status and movements through a
 host-side bridge, while the STM32 firmware executes the validated motion commands
-over the existing HC-05 / USART2 serial interface.
+over the existing Bluetooth module HC-05 / USART2 serial interface.
 
 In practice, this creates a clean separation of roles:
 - **AI agent / MCP client:** plans and issues high-level tool calls (for example status checks and motion requests).
@@ -1100,7 +1100,7 @@ For the concrete serial protocol used by that bridge, see
 [Remote Target Commands (HC-05)](docs/user-manual.md#remote-target-commands-hc-05)
 and [API / MCP Host Integration](docs/user-manual.md#api--mcp-host-integration).
 
-### How It Works (Short)
+### How It Works
 
 1. An MCP-compatible AI client calls a robot tool on the host MCP server.
 2. The host server converts this call into a serial command line and sends it via

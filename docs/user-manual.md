@@ -7,7 +7,7 @@ The robotic arm is designed for automated picking, transportation and precise pl
 The system supports:
 
 - Manual joystick control  
-- Remote Cartesian targets via HC-05 in manual mode
+- Remote Cartesian targets via the HC-05 Bluetooth module in manual mode
 - Automatic execution of predefined motion sequences  
 
 ---
